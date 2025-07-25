@@ -1,0 +1,6 @@
+﻿<Solution>
+  <Folder Name="/Solution/">
+    <File Path="readme.md" />
+  </Folder>
+  <Project Path="GoneDotNet.HeadsUp\GoneDotNet.HeadsUp.csproj" Type="Classic C#" />
+</Solution>

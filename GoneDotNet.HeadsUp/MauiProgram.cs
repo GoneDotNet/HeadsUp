@@ -1,6 +1,8 @@
 ﻿using Camera.MAUI;
-using CommunityToolkit.Maui;
-using Shiny.Extensions.Stores;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Maui.Controls.Hosting;
+using Microsoft.Maui.Hosting;
+using Microsoft.Maui.Media;
 
 namespace GoneDotNet.HeadsUp;
 
@@ -22,7 +24,6 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
-
 
 #if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
