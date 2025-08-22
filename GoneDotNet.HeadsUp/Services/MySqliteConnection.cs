@@ -6,9 +6,8 @@ namespace GoneDotNet.HeadsUp.Services;
 public class MySqliteConnection : SQLiteAsyncConnection
 {
     public MySqliteConnection(
-        IPlatform platform,
         ILogger<MySqliteConnection> logger
-    ) : base(Path.Combine(platform.AppData.FullName, "app.db"))
+    ) : base(Path.Combine(FileSystem.AppDataDirectory, "app.db"))
     {
         var conn = this.GetConnection();
         // conn.CreateTable<YourModel>();
