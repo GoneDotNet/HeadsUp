@@ -1,6 +1,5 @@
-using Microsoft.Extensions.AI;
-
 namespace GoneDotNet.HeadsUp;
+
 
 [ShellMap<ReadyPage>]
 public partial class ReadyViewModel(
