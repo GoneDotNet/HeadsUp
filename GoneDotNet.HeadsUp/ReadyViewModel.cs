@@ -16,11 +16,11 @@ public partial class ReadyViewModel(
         try
         {
             // TODO: loading indicator
-            var questions = await answerProvider.GenerateAnswers(this.Category, Constants.MaxQuestionsPerGame, CancellationToken.None);
+            var questions = await answerProvider.GenerateAnswers(this.Category, Constants.MaxAnswersPerGame, CancellationToken.None);
             gameContext.StartGame(this.Category, questions);
             
             // TODO: countdown to start - 3 seconds
-            // TODO: navigate to game page
+            await navigator.NavigateTo<GameViewModel>();
         }
         catch (Exception ex)
         {

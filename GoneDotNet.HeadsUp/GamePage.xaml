@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:headsUp="clr-namespace:GoneDotNet.HeadsUp"
+             NavigationPage.HasNavigationBar="False"
+             x:Class="GoneDotNet.HeadsUp.GamePage"
+             x:DataType="headsUp:GameViewModel"
+             BackgroundColor="{Binding StateColor}">
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            
+            <!-- Timer at top -->
+            <Label Grid.Row="0" 
+                   Text="{Binding TimerText}" 
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   Margin="0,20,0,10" />
+            
+            <!-- Answer text in center -->
+            <Label Grid.Row="1" 
+                   Text="{Binding AnswerText}" 
+                   FontSize="36"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   VerticalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   VerticalTextAlignment="Center"
+                   Margin="20" />
+            
+            <!-- State text (Success/Pass/Guess the Answer!) -->
+            <Label Grid.Row="2" 
+                   Text="{Binding StateText}" 
+                   FontSize="28"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"
+                   Margin="0,10,0,20" />
+            
+            <!-- Instructions at bottom -->
+            <Label Grid.Row="3" 
+                   Text="Tilt phone up for PASS ↑ • Tilt phone down for SUCCESS ↓"
+                   FontSize="14"
+                   TextColor="White"
+                   Opacity="0.8"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="20,0,20,20" />
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
