@@ -2,6 +2,13 @@
 
 Our first app is a clone of the popular Heads Up game, which is a fun and interactive game where players guess words based on clues given by their teammates. The app will feature:
 
+## Up Next
+* Thread Safety for game loop
+* Music? Sound Effects?
+* Game Summary Screen
+  * Show answers seen and what the answers were
+  * Show video recording
+
 ## Roadmap
 * Screens
   * Home
@@ -26,6 +33,8 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
   * Flip Success/Pass
   * Speech for Flip Success/Pass
 * Vibration for timer (about to start/near end)
+* Play Tick sound for last X seconds
+* Play Music
 * Camera Recording (from front) of the players giving clues
 * Storage of Game Recordings & Scores in SQLite Database
 

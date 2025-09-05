@@ -3,25 +3,35 @@ namespace GoneDotNet.HeadsUp;
 // TODO: navigate to results page with game summary when game ends
 [ShellMap<GamePage>]
 public partial class GameViewModel(
+    INavigator navigator,
+    //TimeProvider timeProvider, 
     IGameContext gameContext,
+    IVideoRecorder videoRecorder,
     IEnumerable<IAnswerDetector> answerDetectors
 ) : ObservableObject, IPageLifecycleAware
 {
     readonly System.Timers.Timer gameTimer = new();
-    readonly CancellationTokenSource cancellationTokenSource = new();
+    readonly CancellationTokenSource gameTokenSource = new();
     
     [ObservableProperty] string answerText = "";
-    [ObservableProperty] string timerText = "";
+    [ObservableProperty] int countdown = 60;
     [ObservableProperty] string stateText = "";
     [ObservableProperty] Color stateColor = Colors.Blue;
     
-    bool isGameRunning;
-    DateTime gameStartTime;
-    TimeSpan gameDuration = TimeSpan.FromMinutes(2); // 2 minutes game duration
-    
-    public void OnAppearing()
+    public async void OnAppearing()
     {
-        _ = StartGame();
+        // TODO: start some music
+        foreach (var detector in answerDetectors)
+            await detector.Start();
+        
+        var path = Path.Combine(FileSystem.AppDataDirectory, gameContext.Id + ".mp4");
+        await videoRecorder.StartRecording(path, true, false);
+        
+        _ = this.DoAnswer(this.gameTokenSource.Token);
+
+        gameTimer.Interval = 1000;
+        gameTimer.Elapsed += OnGameTimerElapsed;
+        gameTimer.Start();
     }
 
     public void OnDisappearing()
@@ -29,173 +39,92 @@ public partial class GameViewModel(
         StopGame();
     }
 
-    async Task StartGame()
+    async Task StopGame()
     {
-        isGameRunning = true;
-        gameStartTime = DateTime.Now;
-        
-        // Setup game timer to update every 100ms for smooth countdown
-        gameTimer.Interval = 100;
-        gameTimer.Elapsed += OnGameTimerElapsed;
-        gameTimer.Start();
-        
-        await GameLoop();
-    }
-
-    void StopGame()
-    {
-        isGameRunning = false;
         gameTimer.Stop();
         gameTimer.Elapsed -= OnGameTimerElapsed;
-        cancellationTokenSource.Cancel();
+        
+        this.gameTokenSource.Cancel(); // cancel the answer loop
+        videoRecorder.StopRecording();
+        foreach (var detector in answerDetectors)
+            await detector.Stop();
+        
         gameContext.EndGame();
     }
-
-    void OnGameTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+    
+    
+    async void OnGameTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
-        if (!isGameRunning) return;
-        
-        var elapsed = DateTime.Now - gameStartTime;
-        var remaining = gameDuration - elapsed;
-        
-        if (remaining <= TimeSpan.Zero)
+        // TODO: worry about initial loop
+        // TODO: watch main thread
+        this.Countdown--;
+
+        if (this.Countdown <= 0)
         {
-            // Game time is up
-            MainThread.BeginInvokeOnMainThread(() =>
-            {
-                TimerText = "Time's Up!";
-                StateText = "Game Over";
-                StateColor = Colors.Red;
-            });
+            await this.StopGame();
+            SetState(ScreenState.GameOver);
+            await Task.Delay(2000);
             
-            StopGame();
-            return;
+            // TODO: navigate to summary page
+            //         // TODO: navigate out (or timer to navigate out?)
+            //         // TODO: show summary of game (answers - correct, passed, missed)
+        }        
+        else if (this.Countdown <= 10)
+        {
+            // TODO: DI this stuff
+            Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+            // TODO: play a sound here as well
         }
-        
-        // Update timer display
-        MainThread.BeginInvokeOnMainThread(() =>
+    }
+    
+
+    async Task DoAnswer(CancellationToken cancellationToken)
+    {
+        while (!cancellationToken.IsCancellationRequested)
         {
-            TimerText = $"{remaining.Minutes:D2}:{remaining.Seconds:D2}";
-        });
-        
-        // Vibrate during last 10 seconds
-        if (remaining.TotalSeconds <= 10 && remaining.Milliseconds < 100)
-        {
-            try
-            {
-                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
-            }
-            catch
-            {
-                // Vibration not supported on this platform
-            }
+            SetState(ScreenState.InAnswer);
+            this.AnswerText = gameContext.CurrentAnswer;
+            
+            var answerType = await this.WaitForAnswer(cancellationToken);
+            gameContext.MarkAnswer(answerType);
+
+            var state = answerType == AnswerType.Pass ? ScreenState.Pass : ScreenState.Success;
+            SetState(state);
+            await Task.Delay(2000, cancellationToken);
         }
     }
 
-    async Task GameLoop()
-    {
-        while (isGameRunning && !cancellationTokenSource.Token.IsCancellationRequested)
-        {
-            try
-            {
-                await Loop();
-                
-                // Move to next answer after successful loop iteration
-                if (isGameRunning)
-                {
-                    // Small delay before next question
-                    await Task.Delay(100, cancellationTokenSource.Token);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                break;
-            }
-            catch (Exception ex)
-            {
-                // Log error and continue
-                System.Diagnostics.Debug.WriteLine($"Error in game loop: {ex.Message}");
-                await Task.Delay(1000, cancellationTokenSource.Token);
-            }
-        }
-    }
 
-    async Task Loop()
+    async Task<AnswerType> WaitForAnswer(CancellationToken cancellationToken)
     {
-        if (!isGameRunning) return;
-        
-        // Set up the new answer
-        AnswerText = gameContext.CurrentAnswer;
-        await SetState(ScreenState.InAnswer);
-        
-        // Create tasks for each answer detector
-        var detectorTasksWithHandlers = answerDetectors.Select(detector =>
+        var tcs = new TaskCompletionSource<AnswerType>();
+        var handler = (AnswerType answerType) =>
         {
-            var tcs = new TaskCompletionSource<AnswerType>();
-            
-            void OnAnswerDetected(AnswerType answerType)
-            {
-                tcs.TrySetResult(answerType);
-            }
-            
-            detector.AnswerDetected += OnAnswerDetected;
-            return new { Task = tcs.Task, Detector = detector, Handler = (Action<AnswerType>)OnAnswerDetected };
-        }).ToArray();
-        
+            tcs.TrySetResult(answerType);
+        };
+
         try
         {
-            // Create a timeout task for the current answer (in case no answer is detected)
-            var timeoutTask = Task.Delay(Timeout.Infinite, cancellationTokenSource.Token);
-            var allTasks = detectorTasksWithHandlers.Select(x => x.Task).Append(timeoutTask);
+            foreach (var detector in answerDetectors)
+                detector.AnswerDetected += handler;
             
-            // Wait for the first detector to trigger or cancellation
-            var completedTask = await Task.WhenAny(allTasks);
-            
-            // If it was the timeout task or cancellation, don't process further
-            if (completedTask == timeoutTask || cancellationTokenSource.Token.IsCancellationRequested)
-                return;
-            
-            // Get the result from the completed detector task
-            var detectorTask = detectorTasksWithHandlers.FirstOrDefault(x => x.Task == completedTask);
-            if (detectorTask == null) return;
-            
-            var result = await detectorTask.Task;
-            
-            // Handle the result based on the answer type
-            switch (result)
-            {
-                case AnswerType.Pass:
-                    await SetState(ScreenState.Pass);
-                    break;
-                
-                case AnswerType.Success:
-                    await SetState(ScreenState.Success);
-                    break;
-            }
-            
-            // Mark the answer in the game context
-            gameContext.MarkAnswer(result);
-            
-            // Stay in Success/Pass state for 2 seconds (timer continues running in background)
-            await Task.Delay(2000, cancellationTokenSource.Token);
+            await using var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
+            return await tcs.Task;
         }
         finally
         {
-            // Clean up all subscriptions
-            foreach (var item in detectorTasksWithHandlers)
-            {
-                item.Detector.AnswerDetected -= item.Handler;
-            }
+            foreach (var detector in answerDetectors)
+                detector.AnswerDetected -= handler;
         }
     }
 
-    Task SetState(ScreenState state) => MainThread.InvokeOnMainThreadAsync(() =>
+    void SetState(ScreenState state)
     {
         switch (state)
         {
             case ScreenState.InAnswer:
                 StateColor = Colors.Blue;
-                //StateText = "Guess the Answer!";
+                StateText = String.Empty;
                 break;
             
             case ScreenState.Success:
@@ -207,13 +136,19 @@ public partial class GameViewModel(
                 StateColor = Colors.Orange;
                 StateText = "Pass";
                 break;
+            
+            case ScreenState.GameOver:
+                StateText = "Game Over";
+                StateColor = Colors.BlueViolet;
+                break;
         }
-    });
+    }
 }
 
 public enum ScreenState
 {
     Success,
     Pass,
-    InAnswer
+    InAnswer,
+    GameOver
 }

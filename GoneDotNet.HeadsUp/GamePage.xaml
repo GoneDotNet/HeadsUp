@@ -18,7 +18,7 @@
             
             <!-- Timer at top -->
             <Label Grid.Row="0" 
-                   Text="{Binding TimerText}" 
+                   Text="{Binding Countdown}" 
                    FontSize="24"
                    FontAttributes="Bold"
                    TextColor="White"
