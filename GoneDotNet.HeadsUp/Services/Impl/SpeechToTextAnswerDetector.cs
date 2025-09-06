@@ -5,7 +5,7 @@ namespace GoneDotNet.HeadsUp.Services.Impl;
 
 
 [Singleton]
-public class SpeechToTextAnswerDetector : IAnswerDetector
+public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetector
 {
     // TODO: listen for "close enough", "correct", or "the actual answer"
     // we need to pass in the actual answer to listen to....
@@ -56,7 +56,9 @@ public class SpeechToTextAnswerDetector : IAnswerDetector
                 break;
             
             default:
-                // no one understands you bro!
+                var result = gameContext.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
+                if (result)
+                    this.AnswerDetected?.Invoke(AnswerType.Success);                        
                 break;
         }
     }
