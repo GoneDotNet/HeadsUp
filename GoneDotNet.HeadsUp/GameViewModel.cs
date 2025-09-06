@@ -98,10 +98,7 @@ public partial class GameViewModel(
     async Task<AnswerType> WaitForAnswer(CancellationToken cancellationToken)
     {
         var tcs = new TaskCompletionSource<AnswerType>();
-        var handler = (AnswerType answerType) =>
-        {
-            tcs.TrySetResult(answerType);
-        };
+        var handler = new EventHandler<AnswerType>((_, args) => tcs.TrySetResult(args));
 
         try
         {

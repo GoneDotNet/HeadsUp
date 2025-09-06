@@ -12,7 +12,9 @@ public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetec
         // could inject/steal game context?  maybe
     ISpeechToText Stt => SpeechToText.Default;
         
-    public event Action<AnswerType>? AnswerDetected;
+    public event EventHandler<AnswerType>? AnswerDetected;
+    
+    
     public async Task Start()
     {
         var result = await Stt.RequestPermissions();
@@ -47,18 +49,18 @@ public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetec
         switch (text)
         {
             case "pass":
-                this.AnswerDetected?.Invoke(AnswerType.Pass);
+                this.AnswerDetected?.Invoke(this, AnswerType.Pass);
                 break;
             
             case "close enough":
             case "correct":
-                this.AnswerDetected?.Invoke(AnswerType.Success);
+                this.AnswerDetected?.Invoke(this, AnswerType.Success);
                 break;
             
             default:
                 var result = gameContext.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
                 if (result)
-                    this.AnswerDetected?.Invoke(AnswerType.Success);                        
+                    this.AnswerDetected?.Invoke(this, AnswerType.Success);                        
                 break;
         }
     }

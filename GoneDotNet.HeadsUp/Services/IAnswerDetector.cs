@@ -2,7 +2,7 @@ namespace GoneDotNet.HeadsUp.Services;
 
 public interface IAnswerDetector
 {
-    event Action<AnswerType> AnswerDetected;
+    event EventHandler<AnswerType> AnswerDetected;
     Task Start();
     Task Stop();
 }

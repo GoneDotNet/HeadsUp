@@ -6,7 +6,7 @@ public class SensorAnswerDetector : IAnswerDetector
     // TODO: flip up means pass, flip down means correct
     IAccelerometer Acc => Accelerometer.Default;
 
-    public event Action<AnswerType>? AnswerDetected;
+    public event EventHandler<AnswerType>? AnswerDetected;
     
     public Task Start()
     {
@@ -34,11 +34,11 @@ public class SensorAnswerDetector : IAnswerDetector
         var v = args.Reading.Acceleration;
         if (v.Y > 4f)
         {
-            this.AnswerDetected?.Invoke(AnswerType.Success);
+            this.AnswerDetected?.Invoke(this, AnswerType.Success);
         }
         else if (v.Y < -4f)
         {
-            this.AnswerDetected?.Invoke(AnswerType.Pass);
+            this.AnswerDetected?.Invoke(this, AnswerType.Pass);
         }
         // Console.WriteLine($"X: {v.X} - Y: {v.Y} - Z: {v.Z}");
     }
