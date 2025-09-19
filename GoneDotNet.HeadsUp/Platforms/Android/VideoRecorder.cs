@@ -9,7 +9,7 @@ using AndroidX.Core.Content;
 namespace GoneDotNet.HeadsUp.Services;
 
 
-[Singleton]
+[Singleton(Type = typeof(IVideoRecorder))]
 public class VideoRecorder : BaseVideoRecorder
 {
     CameraDevice? _cameraDevice;

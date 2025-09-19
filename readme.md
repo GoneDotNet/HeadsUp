@@ -3,7 +3,6 @@
 Our first app is a clone of the popular Heads Up game, which is a fun and interactive game where players guess words based on clues given by their teammates. The app will feature:
 
 ## Up Next
-* Thread Safety for game loop
 * Music? Sound Effects?
 * Game Summary Screen
   * Show answers seen and what the answers were
@@ -11,32 +10,22 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 
 ## Roadmap
 * Screens
-  * Home
-    * Category Selection for New Game
-    * Recordings/scores from previous games
-  * Get Ready
-    * Countdown Timer
-    * AI Loading of Questions
-  * Game Screen
-    * Timer
-    * Answer Display
-  * Results
-* AI Generated "Questions" for Categories
+  * WIP - Recordings/scores from previous games
+  * WIP - Results
+* AI
+  * Return phonetic answers
 * Success/Pass "Detectors"
-  * Text To Speech
-    * Say the answer
-    * "Close enough" for success
-    * "Pass" for pass
-  * Accelerator Gesture for Flip Up or Down
+  * Text To Speech 
+    * Say the answer (only picking up single words right now)
+    * "Close enough" for success (pass works - same issue)
+    * Phonetic sounds for answers
+  * Accelerator Gesture for Flip Up not working
 * Sound Effects For
   * Countdowns
   * Flip Success/Pass
   * Speech for Flip Success/Pass
-* Vibration for timer (about to start/near end)
 * Play Tick sound for last X seconds
 * Play Music
-* Camera Recording (from front) of the players giving clues
-* Storage of Game Recordings & Scores in SQLite Database
 
 
 This project was generated with the Shiny Templates

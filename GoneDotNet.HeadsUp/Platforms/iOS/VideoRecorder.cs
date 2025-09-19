@@ -5,7 +5,7 @@ using UIKit;
 namespace GoneDotNet.HeadsUp.Services;
 
 
-[Singleton]
+[Singleton(Type = typeof(IVideoRecorder))]
 public class VideoRecorder : BaseVideoRecorder
 {
     AVCaptureSession? _captureSession;

@@ -2,9 +2,12 @@ namespace GoneDotNet.HeadsUp;
 
 
 [ShellMap<TestPage>]
-public partial class TestViewModel(IEnumerable<IAnswerDetector> detectors) : ObservableObject, IPageLifecycleAware
+public partial class TestViewModel(
+    IDispatcher dispatcher,
+    IEnumerable<IAnswerDetector> detectors
+) : ObservableObject, IPageLifecycleAware
 {
-    [ObservableProperty] List<EventItem> events = new();
+    public List<EventItem> Events { get; } = new();
     
     
     public async void OnAppearing()
@@ -27,9 +30,13 @@ public partial class TestViewModel(IEnumerable<IAnswerDetector> detectors) : Obs
     }
     
     
-    void DetectorOnAnswerDetected(object? sender, AnswerType e)
+    async void DetectorOnAnswerDetected(object? sender, AnswerType e)
     {
-        
+        await dispatcher.DispatchAsync(() =>
+        {
+            this.Events.Add(new EventItem($"{sender!.GetType().Name} - {e}", DateTimeOffset.Now));
+            this.OnPropertyChanged(nameof(this.Events));
+        });
     }
 }
 

@@ -9,15 +9,15 @@
         <Nullable>enable</Nullable>
         <UseMaui>true</UseMaui>
         <LangVersion>preview</LangVersion>
-        <ApplicationTitle>GoneDotNet.HeadsUp</ApplicationTitle>
+        <ApplicationTitle>GDN Heads Up</ApplicationTitle>
         <ApplicationId>org.gonedotnet.headsup</ApplicationId>
         <ApplicationIdGuid>EEFF5C54-3BE5-4547-91A3-120BD1324376</ApplicationIdGuid>
 
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
 
-        <MauiVersion>9.0.90</MauiVersion>
-        <ShinyVersion>3.3.4</ShinyVersion>
+        <MauiVersion>9.0.110</MauiVersion>
+        <ShinyVersion>4.0.0-beta-0092</ShinyVersion>
         <!--slower build, faster runtime in DEBUG-->
         <!-- <_MauiForceXamlCForDebug Condition="'$(Configuration)' == 'Debug'">true</_MauiForceXamlCForDebug> -->
     </PropertyGroup>
@@ -71,26 +71,18 @@
     </ItemGroup>
 
     <ItemGroup>
-
-        <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0" />
-
-        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.8.0-preview.1.25412.6" />
-
-        <PackageReference Include="Shiny.Hosting.Maui" Version="$(ShinyVersion)"/>
-        <PackageReference Include="Shiny.Extensions.DependencyInjection" Version="1.2.2" />
-
+        <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
+        <PackageReference Include="Azure.AI.Inference" Version="1.0.0-beta.5"/>
+        <PackageReference Include="Microsoft.Extensions.AI" Version="9.9.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="9.8.0-preview.1.25412.6"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.8" Condition="'$(Configuration)' == 'Debug'" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="9.0.9" Condition="'$(Configuration)' == 'Debug'"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="CommunityToolkit.Maui" Version="12.1.0"/>
-        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="6.1.1"/>
-        <PackageReference Include="CommunityToolkit.Maui.Camera" Version="3.0.1"/>
-        <PackageReference Include="Camera.Maui" Version="1.5.1"/>
+        <PackageReference Include="CommunityToolkit.Maui" Version="12.2.0"/>
+        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="6.1.2"/>
         <PackageReference Include="Shiny.Maui.Shell" Version="1.0.0"/>
-        <PackageReference Include="sqlite-net-pcl" Version="1.9.172"/>
-
-        <PackageReference Include="Azure.AI.Inference" Version="1.0.0-beta.5" />
-        <PackageReference Include="Microsoft.Extensions.AI" Version="9.8.0" />
+        <PackageReference Include="Shiny.Extensions.DependencyInjection" Version="1.3.0"/>
+        <PackageReference Include="sqlite-net-pcl" Version="1.10.196-beta" />
     </ItemGroup>
 
 </Project>

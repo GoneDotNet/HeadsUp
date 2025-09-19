@@ -3,23 +3,43 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:GoneDotNet.HeadsUp"
              x:DataType="local:MainViewModel"
-             x:Class="GoneDotNet.HeadsUp.MainPage">
+             x:Class="GoneDotNet.HeadsUp.MainPage"
+             NavigationPage.BackButtonTitle="Back"
+             Title="Heads Up CLONE">
     
-    <CollectionView ItemsSource="{Binding Categories}">
-        <CollectionView.ItemTemplate>
-            <DataTemplate x:DataType="local:GameCategory">
-                <VerticalStackLayout>
-                    <VerticalStackLayout.GestureRecognizers>
-                        <TapGestureRecognizer Command="{Binding NavToGameCommand}" />
-                    </VerticalStackLayout.GestureRecognizers>
-                    <Label Text="{Binding Name}" 
-                           FontSize="24" 
-                           HorizontalOptions="Center" 
-                           Margin="10"/>
-                    
-                    <Label Text="{Binding Description}" />
-                </VerticalStackLayout>
-            </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Test" 
+                     Command="{Binding NavToTestCommand}"/>
+        
+        <ToolbarItem Text="Scores"
+                     Command="{Binding NavToScoreListCommand}"/>
+    </ContentPage.ToolbarItems>
+    
+    <Grid RowDefinitions="*, 80">
+        <CollectionView ItemsSource="{Binding Categories}"
+                        Grid.Row="0">
+            <CollectionView.Header>
+                <Label Text="New Game - Select a Category" 
+                       FontAttributes="Bold"
+                       FontSize="Large"/>
+            </CollectionView.Header>
+            
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="local:GameCategory">
+                    <VerticalStackLayout>
+                        <VerticalStackLayout.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding NavToGameCommand}" />
+                        </VerticalStackLayout.GestureRecognizers>
+                        
+                        <Label Text="{Binding Name}" 
+                               FontSize="24" 
+                               HorizontalOptions="Center" 
+                               Margin="10"/>
+                        
+                        <Label Text="{Binding Description}" />
+                    </VerticalStackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
 </ContentPage>

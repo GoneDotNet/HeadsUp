@@ -9,23 +9,23 @@ public partial class ReadyViewModel(
 ) : ObservableObject, IPageLifecycleAware
 {
     [ObservableProperty] string category;
+    [ObservableProperty] int countdown;
 
 
     public async void OnAppearing()
     {
-        try
+        var questions = await answerProvider.GenerateAnswers(this.Category, Constants.MaxAnswersPerGame, CancellationToken.None);
+        gameContext.StartGame(this.Category, questions);
+        
+        // TODO: countdown to start - 3 seconds
+        var count = 5;
+        while (count != 0)
         {
-            // TODO: loading indicator
-            var questions = await answerProvider.GenerateAnswers(this.Category, Constants.MaxAnswersPerGame, CancellationToken.None);
-            gameContext.StartGame(this.Category, questions);
-            
-            // TODO: countdown to start - 3 seconds
-            await navigator.NavigateTo<GameViewModel>();
+            await Task.Delay(1000);
+            count--;
+            this.Countdown = count;
         }
-        catch (Exception ex)
-        {
-            
-        }
+        await navigator.NavigateTo<GameViewModel>();
     }
 
     public void OnDisappearing()

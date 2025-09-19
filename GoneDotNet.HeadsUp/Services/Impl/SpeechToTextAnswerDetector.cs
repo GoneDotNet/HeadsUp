@@ -5,7 +5,10 @@ namespace GoneDotNet.HeadsUp.Services.Impl;
 
 
 [Singleton]
-public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetector
+public class SpeechToTextAnswerDetector(
+    IGameContext gameContext,
+    ILogger<SpeechToTextAnswerDetector> logger
+) : IAnswerDetector
 {
     // TODO: listen for "close enough", "correct", or "the actual answer"
     // we need to pass in the actual answer to listen to....
@@ -21,16 +24,20 @@ public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetec
         if (!result) // ||  Stt.CurrentState != SpeechToTextState.Stopped)
             return;
 
-       
-        Stt.RecognitionResultCompleted += SttOnRecognitionResultCompleted;
-
+        //Stt.RecognitionResultCompleted += SttOnRecognitionResultCompleted;
+        Stt.RecognitionResultUpdated += SttOnRecognitionResultUpdated;
         await Stt.StartListenAsync(new SpeechToTextOptions
         {
             Culture = new CultureInfo("en-US"),
-            ShouldReportPartialResults = false
+            ShouldReportPartialResults = true
         });
     }
 
+    private void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
+    {
+        ProcessText(args.RecognitionResult);
+        
+    }
 
 
     public async Task Stop()
@@ -38,12 +45,16 @@ public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetec
         Stt.RecognitionResultCompleted -= SttOnRecognitionResultCompleted;
         await Stt.StopListenAsync();
     }
-    
-    
-    void SttOnRecognitionResultCompleted(object? sender, SpeechToTextRecognitionResultCompletedEventArgs args)
+
+
+    void ProcessText(string? text)
     {
-        var text = args.RecognitionResult.Text?.ToLowerInvariant();
-        if (string.IsNullOrWhiteSpace(text))
+        if (String.IsNullOrWhiteSpace(text))
+            return;
+        
+        text = text.Trim().ToLower();
+        logger.LogDebug("Incoming Text: " + text);
+        if (String.IsNullOrWhiteSpace(text))
             return;
 
         switch (text)
@@ -63,5 +74,10 @@ public class SpeechToTextAnswerDetector(IGameContext gameContext) : IAnswerDetec
                     this.AnswerDetected?.Invoke(this, AnswerType.Success);                        
                 break;
         }
+    }
+    
+    void SttOnRecognitionResultCompleted(object? sender, SpeechToTextRecognitionResultCompletedEventArgs args)
+    {
+        ProcessText(args.RecognitionResult.Text);
     }
 }

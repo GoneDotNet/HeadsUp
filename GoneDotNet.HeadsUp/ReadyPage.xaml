@@ -6,7 +6,13 @@
              x:Class="GoneDotNet.HeadsUp.ReadyPage">
     <ContentPage.Content>
         <VerticalStackLayout>
-            <Label Text="{Binding Category}" />
+            <Label Text="{Binding Category}" 
+                   HorizontalOptions="Fill"
+                   HorizontalTextAlignment="Center"/>
+            
+            <Label Text="{Binding Countdown}" 
+                   FontSize="Large"
+                   FontAttributes="Bold"/>
         </VerticalStackLayout>
     </ContentPage.Content>
 </ContentPage>

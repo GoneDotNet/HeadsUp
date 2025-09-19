@@ -127,11 +127,13 @@ public partial class GameViewModel(
             case ScreenState.Success:
                 StateColor = Colors.Green;
                 StateText = "Success!";
+                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
                 break;
             
             case ScreenState.Pass:
                 StateColor = Colors.Orange;
                 StateText = "Pass";
+                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
                 break;
             
             case ScreenState.GameOver:
