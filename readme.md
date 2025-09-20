@@ -3,30 +3,23 @@
 Our first app is a clone of the popular Heads Up game, which is a fun and interactive game where players guess words based on clues given by their teammates. The app will feature:
 
 ## Up Next
-* Music? Sound Effects?
-* Game Summary Screen
-  * Show answers seen and what the answers were
-  * Show video recording
-
-## Roadmap
-* Screens
-  * WIP - Recordings/scores from previous games
-  * WIP - Results
-* AI
-  * Return phonetic answers
-* Success/Pass "Detectors"
-  * Text To Speech 
-    * Say the answer (only picking up single words right now)
-    * "Close enough" for success (pass works - same issue)
-    * Phonetic sounds for answers
-  * Accelerator Gesture for Flip Up not working
-* Sound Effects For
-  * Countdowns
-  * Flip Success/Pass
-  * Speech for Flip Success/Pass
-* Play Tick sound for last X seconds
-* Play Music
-
+* Bugs
+  * 
+  * Game Summary Screen
+    * Show answers seen and what the answers were
+    * Show video recording
+  * Score Screen
+    * Video not auto playing and no transparency through score
+  * Success/Pass "Detectors"
+    * Text To Speech
+        * Say the answer (only picking up single words right now)
+        * "Close enough" for success (pass works - same issue)
+        * Phonetic sounds for answers
+    * Accelerator Gesture for Flip Up not working
+* FEATURES
+  * AI
+      * Return phonetic answers
+  
 
 This project was generated with the Shiny Templates
 > dotnet new install Shiny.Templates
@@ -81,18 +74,11 @@ MediaElement is a view for playing video and audio in your .NET MAUI app.
 * [Documentation](https://learn.microsoft.com/en-ca/dotnet/communitytoolkit/maui/views/mediaelement)
 * [GitHub](https://github.com/CommunityToolkit/Maui)
 
-### MAUI Community Toolkit - Camera View
+## MAUI Audio Plugin
 
-The CameraView provides the ability to connect to a camera, display a preview from the camera and take photos. The CameraView also offers features to support taking photos, controlling the flash, saving captured media to a file, and offering different hooks for events.
+_Provides the ability to play audio inside a .NET MAUI application. - Written by Gerald Versluis_
 
-* [Documentation](https://learn.microsoft.com/en-ca/dotnet/communitytoolkit/maui/views/camera-view)
-* [GitHub](https://github.com/CommunityToolkit/Maui)
-
-### Camera.MAUI
-
-_A Camera View control and a Barcode Endode/Decode control (based on ZXing.Net) for .NET MAUI applications by Hector (hjam40)_
-
-* [GitHub](https://github.com/hjam40/Camera.MAUI)
+* [GitHub](https://github.com/jfversluis/Plugin.Maui.Audio)
 
 ### SQLite .NET PCL
 
