@@ -3,6 +3,7 @@ namespace GoneDotNet.HeadsUp.Services;
 
 public interface IGameService
 {
+    bool IsGameInProgress { get; }
     Guid Id { get; }
     string CurrentAnswer { get; }
     string CurrentCategory { get; }

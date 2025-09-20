@@ -6,14 +6,13 @@ public partial class ScoreViewModel(
     IGameService gameService
 ) : ObservableObject, IPageLifecycleAware
 {
-    [ObservableProperty] string videoUrl;
-    [ObservableProperty] string category;
+    [ObservableProperty] string? videoUrl;
+    [ObservableProperty] string? category;
     [ObservableProperty] DateTimeOffset createdAt;
     [ObservableProperty] int correctAnswers;
 
     [ShellProperty] public Guid GameId { get; set; }
-    
-    
+    [RelayCommand] Task Back() => navigator.NavigateTo($"//{nameof(MainPage)}");
     
     public async void OnAppearing()
     {

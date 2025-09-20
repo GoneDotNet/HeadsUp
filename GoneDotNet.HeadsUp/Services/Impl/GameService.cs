@@ -4,6 +4,7 @@ namespace GoneDotNet.HeadsUp.Services.Impl;
 [Singleton]
 public class GameService(MySqliteConnection conn) : IGameService
 {
+    public bool IsGameInProgress { get; private set; }
     public Guid Id { get; private set; }
     public string CurrentAnswer { get; private set; }
     public string CurrentCategory { get; private set; }
@@ -14,6 +15,10 @@ public class GameService(MySqliteConnection conn) : IGameService
     
     public void StartGame(string category, string[] answers)
     {
+        if (this.IsGameInProgress)
+            return;
+        
+        this.IsGameInProgress = true;
         this.history.Clear();
         
         this.Id = Guid.NewGuid();
@@ -26,6 +31,10 @@ public class GameService(MySqliteConnection conn) : IGameService
     
     public void EndGame()
     {
+        if (!this.IsGameInProgress)
+            return;
+
+        this.IsGameInProgress = false;
         var sconn = conn.GetConnection();
         sconn.BeginTransaction();
         

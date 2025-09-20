@@ -36,30 +36,23 @@ public class BeepService : IBeepService
     }
     
     
-    public void PlayInGameSong()
-    {
-        // themeSong.Stop();
-        // themeSong.Loop = false;
-        // themeSong.Play();
-    }
-    
     public void Countdown()
     {
         Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
-        countdown?.Play();
+        countdown.Play();
     }
 
     
     public void Success()
     {
         Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
-        success?.Play();
+        success.Play();
     }
     
 
     public void Pass()
     {
         Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
-        pass?.Play();
+        pass.Play();
     }
 }

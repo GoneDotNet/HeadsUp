@@ -20,7 +20,10 @@ public partial class GameViewModel(
     
     public async void OnAppearing()
     {
-        // TODO: start some music
+        // TODO: pop to root
+        // if (!gameService.IsGameInProgress)
+        //     await navigator.GoBack();
+        
         foreach (var detector in answerDetectors)
             await detector.Start();
         

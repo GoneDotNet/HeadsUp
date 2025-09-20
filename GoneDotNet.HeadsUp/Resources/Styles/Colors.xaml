@@ -41,4 +41,32 @@
     <Color x:Key="Blue200Accent">#72ACF1</Color>
     <Color x:Key="Blue300Accent">#A7CBF6</Color>
 
+    <!-- Game-specific vibrant colors -->
+    <Color x:Key="GameOrange">#FF6B35</Color>
+    <Color x:Key="GamePink">#FF1B8D</Color>
+    <Color x:Key="GamePurple">#8E44AD</Color>
+    <Color x:Key="GameGreen">#27AE60</Color>
+    <Color x:Key="GameBlue">#3498DB</Color>
+    <Color x:Key="GameRed">#E74C3C</Color>
+    <Color x:Key="GameYellow">#F1C40F</Color>
+    <Color x:Key="GameTeal">#16A085</Color>
+    <Color x:Key="GameLightBlue">#5DADE2</Color>
+    <Color x:Key="GameLightGreen">#58D68D</Color>
+    <Color x:Key="GameLightPink">#F48FB1</Color>
+    <Color x:Key="GameLightPurple">#BB8FCE</Color>
+    
+    <!-- Gradient colors -->
+    <Color x:Key="GradientStart">#667eea</Color>
+    <Color x:Key="GradientEnd">#764ba2</Color>
+    
+    <!-- Game brushes -->
+    <SolidColorBrush x:Key="GameOrangeBrush" Color="{StaticResource GameOrange}"/>
+    <SolidColorBrush x:Key="GamePinkBrush" Color="{StaticResource GamePink}"/>
+    <SolidColorBrush x:Key="GamePurpleBrush" Color="{StaticResource GamePurple}"/>
+    <SolidColorBrush x:Key="GameGreenBrush" Color="{StaticResource GameGreen}"/>
+    <SolidColorBrush x:Key="GameBlueBrush" Color="{StaticResource GameBlue}"/>
+    <SolidColorBrush x:Key="GameRedBrush" Color="{StaticResource GameRed}"/>
+    <SolidColorBrush x:Key="GameYellowBrush" Color="{StaticResource GameYellow}"/>
+    <SolidColorBrush x:Key="GameTealBrush" Color="{StaticResource GameTeal}"/>
+
 </ResourceDictionary>

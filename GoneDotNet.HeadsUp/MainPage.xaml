@@ -5,41 +5,172 @@
              x:DataType="local:MainViewModel"
              x:Class="GoneDotNet.HeadsUp.MainPage"
              NavigationPage.BackButtonTitle="Back"
-             Title="Heads Up CLONE">
+             Title="🎯 Heads Up CLONE">
+    
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource GradientStart}" Offset="0.0" />
+            <GradientStop Color="{StaticResource GradientEnd}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Test" 
+        <ToolbarItem Text="🧪 Test" 
                      Command="{Binding NavToTestCommand}"/>
         
-        <ToolbarItem Text="Scores"
+        <ToolbarItem Text="🏆 Scores"
                      Command="{Binding NavToScoreListCommand}"/>
     </ContentPage.ToolbarItems>
     
-    <Grid RowDefinitions="*, 80">
-        <CollectionView ItemsSource="{Binding Categories}"
-                        Grid.Row="0">
-            <CollectionView.Header>
-                <Label Text="New Game - Select a Category" 
+    <Grid RowDefinitions="Auto, *, 20" Margin="20">
+        
+        <!-- Fun Header Section - Replaced Frame with Border -->
+        <Border Grid.Row="0" 
+                BackgroundColor="{StaticResource White}"
+                StrokeThickness="0"
+                Padding="20"
+                Margin="0,10">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="25"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.2"/>
+            </Border.Shadow>
+            <StackLayout>
+                <Label Text="🎮 NEW GAME" 
                        FontAttributes="Bold"
-                       FontSize="Large"/>
-            </CollectionView.Header>
+                       FontSize="32"
+                       TextColor="{StaticResource GamePurple}"
+                       HorizontalOptions="Center"
+                       Margin="0,0,0,5"/>
+                
+                <Label Text="Select a Category to Start Playing!" 
+                       FontSize="18"
+                       TextColor="{StaticResource GameBlue}"
+                       HorizontalOptions="Center"
+                       FontAttributes="Italic"/>
+            </StackLayout>
+        </Border>
+        
+        <CollectionView Grid.Row="1" 
+                        ItemsSource="{Binding Categories}"
+                        SelectionMode="None"
+                        Margin="0,10">
+            
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical" ItemSpacing="15"/>
+            </CollectionView.ItemsLayout>
             
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="local:GameCategory">
-                    <VerticalStackLayout>
-                        <VerticalStackLayout.GestureRecognizers>
-                            <TapGestureRecognizer Command="{Binding NavToGameCommand}" />
-                        </VerticalStackLayout.GestureRecognizers>
+                    <!-- Replaced Frame with Border -->
+                    <Border BackgroundColor="{StaticResource White}"
+                            StrokeThickness="0"
+                            Padding="0"
+                            HeightRequest="120">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="20"/>
+                        </Border.StrokeShape>
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.15"/>
+                        </Border.Shadow>
                         
-                        <Label Text="{Binding Name}" 
-                               FontSize="24" 
-                               HorizontalOptions="Center" 
-                               Margin="10"/>
-                        
-                        <Label Text="{Binding Description}" />
-                    </VerticalStackLayout>
+                        <!-- Dynamic colorful left border with gradient effect -->
+                        <Grid ColumnDefinitions="12, *">
+                            <Border Grid.Column="0" 
+                                    StrokeThickness="0">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="20,0,0,20"/>
+                                </Border.StrokeShape>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="{StaticResource GameOrange}" Offset="0.0" />
+                                        <GradientStop Color="{StaticResource GamePink}" Offset="0.3" />
+                                        <GradientStop Color="{StaticResource GamePurple}" Offset="0.6" />
+                                        <GradientStop Color="{StaticResource GameBlue}" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
+                            
+                            <Grid Grid.Column="1" Padding="20">
+                                <Grid.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                        <GradientStop Color="{StaticResource GameLightPurple}" Offset="0.0" />
+                                        <GradientStop Color="{StaticResource GameLightBlue}" Offset="1.0" />
+                                    </LinearGradientBrush>
+                                </Grid.Background>
+                                
+                                <Grid.GestureRecognizers>
+                                    <TapGestureRecognizer Command="{Binding NavToGameCommand}" />
+                                </Grid.GestureRecognizers>
+                                
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup x:Name="CommonStates">
+                                        <VisualState x:Name="Normal">
+                                            <VisualState.Setters>
+                                                <Setter Property="Scale" Value="1" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState x:Name="Pressed">
+                                            <VisualState.Setters>
+                                                <Setter Property="Scale" Value="0.96" />
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                
+                                <StackLayout VerticalOptions="Center" Spacing="8">
+                                    
+                                    <!-- Category Name with shadow effect -->
+                                    <Label Text="{Binding Name}" 
+                                           FontSize="26" 
+                                           FontAttributes="Bold"
+                                           TextColor="{StaticResource GamePurple}"
+                                           HorizontalOptions="Start">
+                                        <Label.Shadow>
+                                            <Shadow Brush="{StaticResource GameLightPurple}" 
+                                                    Offset="1,1" 
+                                                    Radius="2" 
+                                                    Opacity="0.3"/>
+                                        </Label.Shadow>
+                                    </Label>
+                                    
+                                    <!-- Description with colorful accent -->
+                                    <Label Text="{Binding Description}" 
+                                           FontSize="16"
+                                           TextColor="{StaticResource Gray600}"
+                                           LineBreakMode="WordWrap"
+                                           MaxLines="2"/>
+                                    
+                                    <!-- Enhanced play indicator with background -->
+                                    <Border BackgroundColor="{StaticResource GameBlue}"
+                                            StrokeThickness="0"
+                                            Padding="10,5"
+                                            HorizontalOptions="End"
+                                            VerticalOptions="End">
+                                        <Border.StrokeShape>
+                                            <RoundRectangle CornerRadius="15"/>
+                                        </Border.StrokeShape>
+                                        <Label Text="🎯 TAP TO PLAY!" 
+                                               FontSize="12"
+                                               FontAttributes="Bold"
+                                               TextColor="{StaticResource White}"/>
+                                    </Border>
+                                </StackLayout>
+                            </Grid>
+                        </Grid>
+                    </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        
+        <!-- Fun footer -->
+        <Label Grid.Row="2" 
+               Text="🎉 Get ready to have fun! 🎉"
+               FontSize="14"
+               TextColor="{StaticResource White}"
+               HorizontalOptions="Center"
+               FontAttributes="Italic"
+               Opacity="0.8"/>
     </Grid>
 </ContentPage>

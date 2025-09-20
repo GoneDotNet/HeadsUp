@@ -10,5 +10,4 @@ public interface IBeepService
     void Pass();
     
     void PlayThemeSong();
-    void PlayInGameSong();
 }

@@ -3,16 +3,144 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:headsUp="clr-namespace:GoneDotNet.HeadsUp"
              x:DataType="headsUp:ReadyViewModel"
-             x:Class="GoneDotNet.HeadsUp.ReadyPage">
+             x:Class="GoneDotNet.HeadsUp.ReadyPage"
+             NavigationPage.HasNavigationBar="False">
+    
+    <!-- Dynamic gradient background similar to GamePage -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource GamePurple}" Offset="0.0" />
+            <GradientStop Color="{StaticResource GameBlue}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    
     <ContentPage.Content>
-        <VerticalStackLayout>
-            <Label Text="{Binding Category}" 
-                   HorizontalOptions="Fill"
-                   HorizontalTextAlignment="Center"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
             
-            <Label Text="{Binding Countdown}" 
-                   FontSize="Large"
-                   FontAttributes="Bold"/>
-        </VerticalStackLayout>
+            <!-- Get Ready Header -->
+            <Border Grid.Row="0" 
+                    BackgroundColor="{StaticResource GameOrange}"
+                    StrokeThickness="0"
+                    Padding="20,15"
+                    Margin="20,40,20,20">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.3"/>
+                </Border.Shadow>
+                <Label Text="🎮 GET READY!" 
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center">
+                    <Label.Shadow>
+                        <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.5"/>
+                    </Label.Shadow>
+                </Label>
+            </Border>
+            
+            <!-- Category and Countdown in center -->
+            <StackLayout Grid.Row="1" 
+                         VerticalOptions="Center"
+                         HorizontalOptions="Center"
+                         Spacing="30">
+                
+                <!-- Category Display -->
+                <Border BackgroundColor="{StaticResource White}"
+                        StrokeThickness="0"
+                        Padding="30,20"
+                        Margin="20,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="0.2"/>
+                    </Border.Shadow>
+                    <StackLayout Spacing="10">
+                        <Label Text="Category:" 
+                               FontSize="18"
+                               FontAttributes="Italic"
+                               TextColor="{StaticResource Gray600}"
+                               HorizontalOptions="Center"/>
+                        <Label Text="{Binding Category}" 
+                               FontSize="28"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GamePurple}"
+                               HorizontalOptions="Center"
+                               HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </Border>
+                
+                <!-- Countdown Display -->
+                <Border BackgroundColor="{StaticResource GameYellow}"
+                        StrokeThickness="0"
+                        Padding="40,30"
+                        Margin="40,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="60"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,5" Radius="20" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <Label Text="{Binding Countdown}" 
+                           FontSize="72"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           HorizontalOptions="Center"
+                           HorizontalTextAlignment="Center">
+                        <Label.Shadow>
+                            <Shadow Brush="Black" Offset="2,2" Radius="4" Opacity="0.6"/>
+                        </Label.Shadow>
+                    </Label>
+                </Border>
+            </StackLayout>
+            
+            <!-- Instructions -->
+            <Border Grid.Row="2" 
+                    BackgroundColor="{StaticResource GameTeal}"
+                    StrokeThickness="0"
+                    Padding="25,15"
+                    Margin="30,20,30,10">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.2"/>
+                </Border.Shadow>
+                <Label Text="⏰ Game starts when countdown reaches 0!" 
+                       FontSize="18"
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"
+                       HorizontalTextAlignment="Center">
+                    <Label.Shadow>
+                        <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.4"/>
+                    </Label.Shadow>
+                </Label>
+            </Border>
+            
+            <!-- Bottom tip -->
+            <Label Grid.Row="3" 
+                   Text="💡 Hold the phone on your forehead and get ready to guess!"
+                   FontSize="16"
+                   FontAttributes="Italic"
+                   TextColor="White"
+                   Opacity="0.9"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   Margin="20,10,20,30">
+                <Label.Shadow>
+                    <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.3"/>
+                </Label.Shadow>
+            </Label>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
