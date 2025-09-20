@@ -10,7 +10,8 @@ public class MySqliteConnection : SQLiteAsyncConnection
     ) : base(Path.Combine(FileSystem.AppDataDirectory, "app.db"))
     {
         var conn = this.GetConnection();
-        // conn.CreateTable<YourModel>();
+        conn.CreateTable<Game>();
+        conn.CreateTable<GameAnswer>();
 
         conn.EnableWriteAheadLogging();
 #if DEBUG
@@ -20,5 +21,23 @@ public class MySqliteConnection : SQLiteAsyncConnection
     }
 
 
-    // public AsyncTableQuery<YourModel> Logs => this.Table<YourModel>();
+    public AsyncTableQuery<Game> Games => this.Table<Game>();
+    public AsyncTableQuery<GameAnswer> GameAnswers => this.Table<GameAnswer>();
+}
+
+public class Game
+{
+    [PrimaryKey]
+    public Guid Id { get; set; }
+    public string Category { get; set; }
+    public DateTimeOffset CreatedAt { get; set; }
+}
+
+public class GameAnswer
+{
+    [PrimaryKey]
+    public Guid Id { get; set; }
+    public Guid GameId { get; set; }
+    public string Value { get; set; }
+    public AnswerType? AnswerType { get; set; }
 }

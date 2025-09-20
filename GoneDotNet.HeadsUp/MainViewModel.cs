@@ -1,7 +1,10 @@
 ﻿namespace GoneDotNet.HeadsUp;
 
 [ShellMap<MainPage>(registerRoute: false)]
-public partial class MainViewModel(INavigator navigator) : ObservableObject, IPageLifecycleAware
+public partial class MainViewModel(
+    INavigator navigator,
+    IBeepService beeper
+) : ObservableObject, IPageLifecycleAware
 {
     [RelayCommand] Task NavToTest() => navigator.NavigateToTest();
     [RelayCommand] Task NavToScoreList() => navigator.NavigateToScoreList();
@@ -9,12 +12,18 @@ public partial class MainViewModel(INavigator navigator) : ObservableObject, IPa
 
     public void OnAppearing()
     {
+        beeper.PlayThemeSong();
         this.Categories =
         [
             new GameCategory(
                 navigator, 
                 "Disney Princesses", 
                 "A collection of games featuring Disney princesses."
+            ),
+            new GameCategory(
+                navigator, 
+                "Popular rock songs from the 80s",
+                "A collection of popular rock songs from the 1980s."
             )
         ];
     }

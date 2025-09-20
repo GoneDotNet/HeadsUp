@@ -5,19 +5,17 @@
              x:Class="GoneDotNet.HeadsUp.TestPage"
              x:DataType="headsUp:TestViewModel"
              Title="Test Page">
-    <ContentPage.Content>
-        <CollectionView ItemsSource="{Binding Events}">
-            <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="headsUp:EventItem">
-                    <Grid ColumnDefinitions="1*, 1*">
-                        <Label Text="{Binding Text}" 
-                               Grid.Column="0"/>
-                        
-                        <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm:ss}'}"
-                               Grid.Column="1"/>
-                    </Grid>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
-    </ContentPage.Content>
+    <CollectionView ItemsSource="{Binding Events}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate x:DataType="headsUp:EventItem">
+                <Grid ColumnDefinitions="1*, 1*">
+                    <Label Text="{Binding Text}" 
+                           Grid.Column="0"/>
+                    
+                    <Label Text="{Binding Timestamp, StringFormat='{0:HH:mm:ss}'}"
+                           Grid.Column="1"/>
+                </Grid>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+    </CollectionView>
 </ContentPage>

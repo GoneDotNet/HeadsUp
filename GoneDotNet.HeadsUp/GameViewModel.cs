@@ -1,11 +1,11 @@
 namespace GoneDotNet.HeadsUp;
 
-// TODO: navigate to results page with game summary when game ends
+
 [ShellMap<GamePage>]
 public partial class GameViewModel(
     INavigator navigator,
-    //TimeProvider timeProvider, 
-    IGameContext gameContext,
+    IBeepService beeper,
+    IGameService gameService,
     IVideoRecorder videoRecorder,
     IEnumerable<IAnswerDetector> answerDetectors
 ) : ObservableObject, IPageLifecycleAware
@@ -24,7 +24,7 @@ public partial class GameViewModel(
         foreach (var detector in answerDetectors)
             await detector.Start();
         
-        var path = Path.Combine(FileSystem.AppDataDirectory, gameContext.Id + ".mp4");
+        var path = Path.Combine(FileSystem.AppDataDirectory, gameService.Id + ".mp4");
         await videoRecorder.StartRecording(path, true, false);
         
         _ = this.DoAnswer(this.gameTokenSource.Token);
@@ -49,14 +49,12 @@ public partial class GameViewModel(
         foreach (var detector in answerDetectors)
             await detector.Stop();
         
-        gameContext.EndGame();
+        gameService.EndGame();
     }
     
     
     async void OnGameTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
     {
-        // TODO: worry about initial loop
-        // TODO: watch main thread
         this.Countdown--;
 
         if (this.Countdown <= 0)
@@ -64,16 +62,12 @@ public partial class GameViewModel(
             await this.StopGame();
             SetState(ScreenState.GameOver);
             await Task.Delay(2000);
-            
-            // TODO: navigate to summary page
-            //         // TODO: navigate out (or timer to navigate out?)
-            //         // TODO: show summary of game (answers - correct, passed, missed)
+
+            await navigator.NavigateToScore(gameService.Id);
         }        
         else if (this.Countdown <= 10)
         {
-            // TODO: DI this stuff
-            Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
-            // TODO: play a sound here as well
+            beeper.Countdown();
         }
     }
     
@@ -83,10 +77,10 @@ public partial class GameViewModel(
         while (!cancellationToken.IsCancellationRequested)
         {
             SetState(ScreenState.InAnswer);
-            this.AnswerText = gameContext.CurrentAnswer;
+            this.AnswerText = gameService.CurrentAnswer;
             
             var answerType = await this.WaitForAnswer(cancellationToken);
-            gameContext.MarkAnswer(answerType);
+            gameService.MarkAnswer(answerType);
 
             var state = answerType == AnswerType.Pass ? ScreenState.Pass : ScreenState.Success;
             SetState(state);
@@ -127,13 +121,13 @@ public partial class GameViewModel(
             case ScreenState.Success:
                 StateColor = Colors.Green;
                 StateText = "Success!";
-                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+                beeper.Success();
                 break;
             
             case ScreenState.Pass:
                 StateColor = Colors.Orange;
                 StateText = "Pass";
-                Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+                beeper.Pass();
                 break;
             
             case ScreenState.GameOver:

@@ -6,10 +6,22 @@
              x:DataType="headsUp:ScoreListViewModel"
              Title="Scores">
 
-    <CollectionView ItemsSource="{Binding}">
+    <CollectionView ItemsSource="{Binding Games}">
         <CollectionView.ItemTemplate>
-            <DataTemplate>
-            
+            <DataTemplate x:DataType="headsUp:GameResultViewModel">
+                <VerticalStackLayout>
+                    <VerticalStackLayout.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding NavToScoreCommand}" />
+                    </VerticalStackLayout.GestureRecognizers>
+                    
+                    <Label Text="{Binding CreatedAt, StringFormat='{0:MMMM dd, yyyy}'}"
+                           FontAttributes="Bold"
+                           FontSize="Medium"
+                           HorizontalOptions="Center" />
+                    
+                    <Label Text="{Binding Category}" />
+                    <Label Text="{Binding CorrectAnswers}" />
+                </VerticalStackLayout>
             </DataTemplate>
         </CollectionView.ItemTemplate>
     </CollectionView>

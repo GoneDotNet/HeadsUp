@@ -6,7 +6,7 @@ namespace GoneDotNet.HeadsUp.Services.Impl;
 
 [Singleton]
 public class SpeechToTextAnswerDetector(
-    IGameContext gameContext,
+    IGameService gameService,
     ILogger<SpeechToTextAnswerDetector> logger
 ) : IAnswerDetector
 {
@@ -33,10 +33,9 @@ public class SpeechToTextAnswerDetector(
         });
     }
 
-    private void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
+    void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
     {
         ProcessText(args.RecognitionResult);
-        
     }
 
 
@@ -69,7 +68,7 @@ public class SpeechToTextAnswerDetector(
                 break;
             
             default:
-                var result = gameContext.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
+                var result = gameService.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
                 if (result)
                     this.AnswerDetected?.Invoke(this, AnswerType.Success);                        
                 break;
