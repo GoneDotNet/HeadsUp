@@ -5,7 +5,8 @@
              NavigationPage.HasNavigationBar="False"
              x:Class="GoneDotNet.HeadsUp.GamePage"
              x:DataType="headsUp:GameViewModel"
-             BackgroundColor="{Binding StateColor}">
+             BackgroundColor="{Binding StateColor}"
+             Shell.NavBarIsVisible="False">
     <ContentPage.Content>
         <Grid>
             <Grid.RowDefinitions>

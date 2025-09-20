@@ -11,10 +11,11 @@ public class BeepService : IBeepService
     readonly IAudioPlayer pass;
     readonly IAudioPlayer countdown;
     readonly IAudioPlayer themeSong;
+    readonly ILogger logger;
     
-    
-    public BeepService()
+    public BeepService(ILogger<BeepService> logger)
     {
+        this.logger = logger;
         var assembly = Assembly.GetExecutingAssembly();
         
         this.themeSong = AudioManager.Current.CreatePlayer(assembly.GetManifestResourceStream("GoneDotNet.HeadsUp.Assets.theme.mp3")!);
@@ -30,6 +31,7 @@ public class BeepService : IBeepService
         if (isPlaying)
             return;
 
+        this.logger.LogDebug("Playing theme song");
         isPlaying = true;
         themeSong.Loop = true;
         themeSong.Play();
@@ -38,21 +40,24 @@ public class BeepService : IBeepService
     
     public void Countdown()
     {
-        Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
         countdown.Play();
+        this.logger.LogDebug("Countdown Beep");
     }
 
     
     public void Success()
     {
-        Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
         success.Play();
+        this.logger.LogDebug("Success Beep");
     }
     
 
     public void Pass()
     {
-        Vibration.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
         pass.Play();
+        this.logger.LogDebug("Pass Beep");
     }
 }

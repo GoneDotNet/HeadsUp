@@ -4,7 +4,7 @@
              xmlns:headsUp="clr-namespace:GoneDotNet.HeadsUp"
              x:DataType="headsUp:ReadyViewModel"
              x:Class="GoneDotNet.HeadsUp.ReadyPage"
-             NavigationPage.HasNavigationBar="False">
+             Shell.NavBarIsVisible="False">
     
     <!-- Dynamic gradient background similar to GamePage -->
     <ContentPage.Background>
