@@ -5,56 +5,144 @@
              NavigationPage.HasNavigationBar="False"
              x:Class="GoneDotNet.HeadsUp.GamePage"
              x:DataType="headsUp:GameViewModel"
-             BackgroundColor="{Binding StateColor}"
              Shell.NavBarIsVisible="False">
-    <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
-            </Grid.RowDefinitions>
+    
+    <!-- Dynamic gradient background instead of solid color -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{Binding StateColor}" Offset="0.0" />
+            <GradientStop Color="{StaticResource GamePurple}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+       
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <!-- Timer with vibrant card design -->
+        <Border Grid.Row="0" 
+                BackgroundColor="{StaticResource White}"
+                StrokeThickness="0"
+                Padding="20,15"
+                Margin="0,20,0,20"
+                Opacity="0.95">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="25"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.3"/>
+            </Border.Shadow>
+            <StackLayout Orientation="Horizontal" 
+                         HorizontalOptions="Center" 
+                         Spacing="10">
+                <Label Text="⏰" 
+                       FontSize="28"
+                       VerticalOptions="Center"/>
+                <Label Text="{Binding Countdown}" 
+                       FontSize="32"
+                       FontAttributes="Bold"
+                       TextColor="{StaticResource GameOrange}"
+                       VerticalOptions="Center">
+                    <Label.Shadow>
+                        <Shadow Brush="{StaticResource GameLightPink}" 
+                                Offset="1,1" 
+                                Radius="2" 
+                                Opacity="0.3"/>
+                    </Label.Shadow>
+                </Label>
+            </StackLayout>
+        </Border>
+        
+        <!-- Answer text with vibrant card -->
+        <Border Grid.Row="1" 
+                BackgroundColor="{StaticResource White}"
+                StrokeThickness="0"
+                Padding="30"
+                Margin="0,10"
+                Opacity="0.95"
+                VerticalOptions="Center">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="30"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,5" Radius="20" Opacity="0.4"/>
+            </Border.Shadow>
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="{StaticResource GameLightBlue}" Offset="0.0" />
+                    <GradientStop Color="{StaticResource GameLightPurple}" Offset="1.0" />
+                </LinearGradientBrush>
+            </Border.Background>
             
-            <!-- Timer at top -->
-            <Label Grid.Row="0" 
-                   Text="{Binding Countdown}" 
-                   FontSize="24"
+            <Label Text="{Binding AnswerText}" 
+                   FontSize="42"
                    FontAttributes="Bold"
-                   TextColor="White"
-                   HorizontalOptions="Center"
-                   Margin="0,20,0,10" />
-            
-            <!-- Answer text in center -->
-            <Label Grid.Row="1" 
-                   Text="{Binding AnswerText}" 
-                   FontSize="36"
-                   FontAttributes="Bold"
-                   TextColor="White"
+                   TextColor="{StaticResource GamePurple}"
                    HorizontalOptions="Center"
                    VerticalOptions="Center"
                    HorizontalTextAlignment="Center"
-                   VerticalTextAlignment="Center"
-                   Margin="20" />
-            
-            <!-- State text (Success/Pass/Guess the Answer!) -->
-            <Label Grid.Row="2" 
-                   Text="{Binding StateText}" 
-                   FontSize="28"
+                   VerticalTextAlignment="Center">
+                <Label.Shadow>
+                    <Shadow Brush="{StaticResource GameLightPurple}" 
+                            Offset="2,2" 
+                            Radius="4" 
+                            Opacity="0.3"/>
+                </Label.Shadow>
+            </Label>
+        </Border>
+        
+        <!-- State text with dynamic colored card -->
+        <Border Grid.Row="2" 
+                BackgroundColor="{StaticResource GameBlue}"
+                StrokeThickness="0"
+                Padding="25,15"
+                Margin="20,10,20,20"
+                Opacity="0.95">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="20"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.3"/>
+            </Border.Shadow>
+            <Label Text="{Binding StateText}" 
+                   FontSize="32"
                    FontAttributes="Bold"
                    TextColor="White"
                    HorizontalOptions="Center"
-                   Margin="0,10,0,20" />
-            
-            <!-- Instructions at bottom -->
-            <Label Grid.Row="3" 
-                   Text="Tilt phone up for PASS ↑ • Tilt phone down for SUCCESS ↓"
-                   FontSize="14"
+                   HorizontalTextAlignment="Center">
+                <Label.Shadow>
+                    <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.5"/>
+                </Label.Shadow>
+            </Label>
+        </Border>
+        
+        <!-- Instructions with colorful design -->
+        <Border Grid.Row="3" 
+                BackgroundColor="{StaticResource GameTeal}"
+                StrokeThickness="0"
+                Padding="20,12"
+                Margin="10,0,10,20"
+                Opacity="0.9">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="18"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.2"/>
+            </Border.Shadow>
+            <Label Text="📱 Tilt phone UP for PASS ↑ • Tilt phone DOWN for SUCCESS ↓"
+                   FontSize="16"
+                   FontAttributes="Bold"
                    TextColor="White"
-                   Opacity="0.8"
                    HorizontalOptions="Center"
-                   HorizontalTextAlignment="Center"
-                   Margin="20,0,20,20" />
-        </Grid>
-    </ContentPage.Content>
+                   HorizontalTextAlignment="Center">
+                <Label.Shadow>
+                    <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.4"/>
+                </Label.Shadow>
+            </Label>
+        </Border>
+    </Grid>
 </ContentPage>
