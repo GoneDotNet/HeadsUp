@@ -32,12 +32,19 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
                         break;
                 }
             };
-            
-            Acc.ReadingChanged += AccOnReadingChanged;
-            Acc.Start(SensorSpeed.Game);
-            
-            Gyro.ReadingChanged += GyroOnReadingChanged;
-            Gyro.Start(SensorSpeed.Game);
+
+            try
+            {
+                Acc.ReadingChanged += AccOnReadingChanged;
+                Acc.Start(SensorSpeed.Game);
+
+                Gyro.ReadingChanged += GyroOnReadingChanged;
+                Gyro.Start(SensorSpeed.Game);
+            }
+            catch (Exception ex)
+            {
+                logger.LogWarning(ex, "Failed to start accelerometer/gyroscope");
+            }
         }
 
         return Task.CompletedTask;

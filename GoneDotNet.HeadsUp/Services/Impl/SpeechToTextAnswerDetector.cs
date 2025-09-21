@@ -24,30 +24,32 @@ public class SpeechToTextAnswerDetector(
         if (!result) // ||  Stt.CurrentState != SpeechToTextState.Stopped)
             return;
 
-        //Stt.RecognitionResultCompleted += SttOnRecognitionResultCompleted;
-        Stt.RecognitionResultUpdated += SttOnRecognitionResultUpdated;
-        await Stt.StartListenAsync(new SpeechToTextOptions
+        try
         {
-            Culture = new CultureInfo("en-US"),
-            ShouldReportPartialResults = true
-        });
-    }
-
-    void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
-    {
-        ProcessText(args.RecognitionResult);
+            Stt.RecognitionResultUpdated += SttOnRecognitionResultUpdated;
+            await Stt.StartListenAsync(new SpeechToTextOptions
+            {
+                Culture = new CultureInfo("en-US"),
+                ShouldReportPartialResults = true
+            });
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to start Speech-to-text");
+        }
     }
 
 
     public async Task Stop()
     {
-        Stt.RecognitionResultCompleted -= SttOnRecognitionResultCompleted;
+        Stt.RecognitionResultUpdated -= SttOnRecognitionResultUpdated;
         await Stt.StopListenAsync();
     }
 
 
-    void ProcessText(string? text)
+    void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
     {
+        var text = args.RecognitionResult;
         if (String.IsNullOrWhiteSpace(text))
             return;
         
@@ -58,6 +60,7 @@ public class SpeechToTextAnswerDetector(
 
         switch (text)
         {
+            case "next question":
             case "pass":
                 this.AnswerDetected?.Invoke(this, AnswerType.Pass);
                 break;
@@ -73,10 +76,5 @@ public class SpeechToTextAnswerDetector(
                     this.AnswerDetected?.Invoke(this, AnswerType.Success);                        
                 break;
         }
-    }
-    
-    void SttOnRecognitionResultCompleted(object? sender, SpeechToTextRecognitionResultCompletedEventArgs args)
-    {
-        ProcessText(args.RecognitionResult.Text);
     }
 }

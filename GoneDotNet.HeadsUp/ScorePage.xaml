@@ -10,6 +10,7 @@
     <Grid>
         <toolkit:MediaElement Source="{Binding VideoUrl}"
                               ShouldAutoPlay="True"
+                              ShouldShowPlaybackControls="False"
                               Volume="1.0" 
                               ShouldLoopPlayback="True" 
                               HorizontalOptions="Fill"

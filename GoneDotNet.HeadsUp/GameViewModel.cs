@@ -3,10 +3,12 @@ namespace GoneDotNet.HeadsUp;
 
 [ShellMap<GamePage>]
 public partial class GameViewModel(
+    ILogger<GameViewModel> logger,
     INavigator navigator,
     IBeepService beeper,
     IGameService gameService,
     IVideoRecorder videoRecorder,
+    IFileSystem fileSystem,
     IEnumerable<IAnswerDetector> answerDetectors
 ) : ObservableObject, IPageLifecycleAware
 {
@@ -23,12 +25,20 @@ public partial class GameViewModel(
         // TODO: pop to root
         // if (!gameService.IsGameInProgress)
         //     await navigator.GoBack();
-        
+        beeper.SetThemeVolume(0.5f);
         foreach (var detector in answerDetectors)
             await detector.Start();
         
-        var path = Path.Combine(FileSystem.AppDataDirectory, gameService.Id + ".mp4");
-        await videoRecorder.StartRecording(path, true, false);
+        try
+        {
+            var path = Path.Combine(fileSystem.AppDataDirectory, gameService.Id + ".mp4");
+            await videoRecorder.StartRecording(path, true, false);
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Failed to start video recording");
+        }
+        
         
         _ = this.DoAnswer(this.gameTokenSource.Token);
 
@@ -66,7 +76,7 @@ public partial class GameViewModel(
             SetState(ScreenState.GameOver);
             await Task.Delay(2000);
 
-            await navigator.NavigateToScore(gameService.Id);
+            await navigator.NavigateToScore(gameService.Id, true);
         }        
         else if (this.Countdown <= 10)
         {

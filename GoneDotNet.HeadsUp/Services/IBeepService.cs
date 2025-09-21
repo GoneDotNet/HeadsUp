@@ -9,5 +9,7 @@ public interface IBeepService
     void Success();
     void Pass();
     
+    void SetThemeVolume(float volume);
     void PlayThemeSong();
+    void StopThemeSong();
 }

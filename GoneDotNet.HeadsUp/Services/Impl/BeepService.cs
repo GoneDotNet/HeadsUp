@@ -26,6 +26,7 @@ public class BeepService : IBeepService
     
     
     bool isPlaying = false;
+    public void SetThemeVolume(float volume) => themeSong.Volume = volume;
     public void PlayThemeSong()
     {
         if (isPlaying)
@@ -35,6 +36,17 @@ public class BeepService : IBeepService
         isPlaying = true;
         themeSong.Loop = true;
         themeSong.Play();
+    }
+    
+    
+    public void StopThemeSong()
+    {
+        if (!isPlaying)
+            return;
+
+        this.logger.LogDebug("Stopping theme song");
+        isPlaying = false;
+        themeSong.Stop();
     }
     
     

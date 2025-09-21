@@ -10,14 +10,15 @@ public partial class ReadyViewModel(
 ) : ObservableObject, IPageLifecycleAware
 {
     [ObservableProperty] string category;
-    [ObservableProperty] int countdown;
+    [ObservableProperty] int countdown = 5;
 
 
     public async void OnAppearing()
     {
         var questions = await answerProvider.GenerateAnswers(this.Category, Constants.MaxAnswersPerGame, CancellationToken.None);
         gameService.StartGame(this.Category, questions);
-        
+     
+        beeper.SetThemeVolume(0.5f);
         var count = 5;
         while (count != 0)
         {
