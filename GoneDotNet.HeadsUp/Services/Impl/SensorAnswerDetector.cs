@@ -16,35 +16,31 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
     
     public Task Start()
     {
-        if (this.Acc is { IsMonitoring: false, IsSupported: true })
+        this._flipUpDetector.OnFlipped = state =>
         {
-            this._flipUpDetector.OnFlipped = state =>
+            switch (state)
             {
-                switch (state)
-                {
-                    case FlipUpDetector.State.FlippedUp:
-                        // Flip up means pass
-                        this.AnswerDetected?.Invoke(this, AnswerType.Pass);
-                        break;
-                    case FlipUpDetector.State.FlippedDown:
-                        // Flip down means correct/success
-                        this.AnswerDetected?.Invoke(this, AnswerType.Success);
-                        break;
-                }
-            };
-
-            try
-            {
-                Acc.ReadingChanged += AccOnReadingChanged;
-                Acc.Start(SensorSpeed.Game);
-
-                Gyro.ReadingChanged += GyroOnReadingChanged;
-                Gyro.Start(SensorSpeed.Game);
+                case FlipUpDetector.State.FlippedUp:
+                    // Flip up means pass
+                    this.AnswerDetected?.Invoke(this, AnswerType.Pass);
+                    break;
+                case FlipUpDetector.State.FlippedDown:
+                    // Flip down means correct/success
+                    this.AnswerDetected?.Invoke(this, AnswerType.Success);
+                    break;
             }
-            catch (Exception ex)
-            {
-                logger.LogWarning(ex, "Failed to start accelerometer/gyroscope");
-            }
+        };
+
+        if (Acc is { IsSupported: true, IsMonitoring: false })
+        {
+            Acc.ReadingChanged += AccOnReadingChanged;
+            Acc.Start(SensorSpeed.Game);
+        }
+
+        if (Gyro is { IsSupported: true, IsMonitoring: false })
+        {
+            Gyro.ReadingChanged += GyroOnReadingChanged;
+            Gyro.Start(SensorSpeed.Game);
         }
 
         return Task.CompletedTask;
@@ -53,8 +49,11 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
 
     public Task Stop()
     {
-        Acc.Stop();
-        Gyro.Stop();
+        if (Acc is { IsMonitoring: true, IsSupported: true })
+            Acc.Stop();
+        
+        if (Gyro is { IsMonitoring: true, IsSupported: true })
+            Gyro.Stop();
 
         this._flipUpDetector.OnFlipped = null;
         Acc.ReadingChanged -= AccOnReadingChanged;

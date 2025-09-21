@@ -15,9 +15,6 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 ## TODO
 * FEATURE: AI Phonetic Answers and structured data
 * BUG: Prevent android back button on ready/game screens
-* Game Summary Screen
-  * FEATURE: Show answers seen and what the answers were
-  * BUG: Show video recording
 * BUG: MediaElement will turn off audio player sounds
 * SensorAnswerDetector
   * BUG: Flip Up to pass not working
