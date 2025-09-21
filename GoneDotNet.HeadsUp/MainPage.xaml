@@ -59,7 +59,7 @@
             </CollectionView.ItemsLayout>
             
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="local:GameCategory">
+                <DataTemplate x:DataType="local:GameCategoryViewModel">
                     <!-- Replaced Frame with Border -->
                     <Border BackgroundColor="{StaticResource White}"
                             StrokeThickness="0"
