@@ -4,16 +4,169 @@
              xmlns:headsUp="clr-namespace:GoneDotNet.HeadsUp"
              x:DataType="headsUp:CategoryCreateViewModel"
              x:Class="GoneDotNet.HeadsUp.CategoryCreatePage"
-             Title="Create Category">
+             Title="✨ Create Category">
     
-    <VerticalStackLayout>
-        <Entry Text="{Binding Name}"
-               MaxLength="100" />
-        
-        <Editor Text="{Binding Description}" 
-                MaxLength="200" />
-        
-        <Button Text="Add Category" 
-                Command="{Binding AddCommand}"/>
-    </VerticalStackLayout>
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Color="{StaticResource GameOrange}" Offset="0.0" />
+            <GradientStop Color="{StaticResource GamePink}" Offset="1.0" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+    
+    <ScrollView Padding="20">
+        <VerticalStackLayout Spacing="25">
+            
+            <!-- Header Section -->
+            <Border BackgroundColor="{StaticResource White}"
+                    StrokeThickness="0"
+                    Padding="25,20"
+                    Margin="0,20,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.3"/>
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="🎯 CREATE NEW CATEGORY" 
+                           FontAttributes="Bold"
+                           FontSize="26"
+                           TextColor="{StaticResource GamePurple}"
+                           HorizontalOptions="Center">
+                        <Label.Shadow>
+                            <Shadow Brush="{StaticResource GameLightPurple}" Offset="1,1" Radius="2" Opacity="0.3"/>
+                        </Label.Shadow>
+                    </Label>
+                    
+                    <Label Text="Add a new category for your game collection!" 
+                           FontSize="16"
+                           TextColor="{StaticResource GameBlue}"
+                           HorizontalOptions="Center"
+                           FontAttributes="Italic"/>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Form Section -->
+            <Border BackgroundColor="{StaticResource White}"
+                    StrokeThickness="0"
+                    Padding="25"
+                    Opacity="0.95">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="20"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.2"/>
+                </Border.Shadow>
+                <VerticalStackLayout Spacing="20">
+                    
+                    <!-- Category Name Section -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📝 Category Name" 
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GamePurple}"/>
+                        
+                        <Border BackgroundColor="{StaticResource Gray100}"
+                                StrokeThickness="2"
+                                Stroke="{StaticResource GameBlue}"
+                                Padding="5">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Entry Text="{Binding Name}"
+                                   MaxLength="100"
+                                   Placeholder="Enter category name..."
+                                   PlaceholderColor="{StaticResource Gray400}"
+                                   FontSize="16"
+                                   TextColor="{StaticResource Gray900}"
+                                   BackgroundColor="Transparent"/>
+                        </Border>
+                    </VerticalStackLayout>
+                    
+                    <!-- Description Section -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="📄 Description" 
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GamePurple}"/>
+                        
+                        <Border BackgroundColor="{StaticResource Gray100}"
+                                StrokeThickness="2"
+                                Stroke="{StaticResource GameBlue}"
+                                Padding="5">
+                            <Border.StrokeShape>
+                                <RoundRectangle CornerRadius="12"/>
+                            </Border.StrokeShape>
+                            <Editor Text="{Binding Description}" 
+                                    MaxLength="200"
+                                    Placeholder="Describe your category..."
+                                    PlaceholderColor="{StaticResource Gray400}"
+                                    FontSize="16"
+                                    TextColor="{StaticResource Gray900}"
+                                    BackgroundColor="Transparent"
+                                    HeightRequest="100"/>
+                        </Border>
+                    </VerticalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+            
+            <!-- Action Button -->
+            <Border BackgroundColor="{StaticResource GameGreen}"
+                    StrokeThickness="0"
+                    Padding="25,18"
+                    Margin="0,10,0,0">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="25"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,4" Radius="12" Opacity="0.4"/>
+                </Border.Shadow>
+                <Border.GestureRecognizers>
+                    <TapGestureRecognizer Command="{Binding AddCommand}" />
+                </Border.GestureRecognizers>
+                <HorizontalStackLayout Spacing="12" 
+                                     HorizontalOptions="Center">
+                    <Label Text="✅" 
+                           FontSize="24"
+                           VerticalOptions="Center"/>
+                    <Label Text="CREATE CATEGORY" 
+                           FontSize="20"
+                           FontAttributes="Bold"
+                           TextColor="White"
+                           VerticalOptions="Center">
+                        <Label.Shadow>
+                            <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.6"/>
+                        </Label.Shadow>
+                    </Label>
+                </HorizontalStackLayout>
+            </Border>
+            
+            <!-- Helper Text -->
+            <Border BackgroundColor="{StaticResource GameYellow}"
+                    StrokeThickness="0"
+                    Padding="20,15"
+                    Opacity="0.9">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="15"/>
+                </Border.StrokeShape>
+                <Border.Shadow>
+                    <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.2"/>
+                </Border.Shadow>
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="💡" 
+                           FontSize="20"
+                           VerticalOptions="Center"/>
+                    <Label Text="Tip: Choose a clear name and description to help players understand your category!" 
+                           FontSize="14"
+                           TextColor="{StaticResource Gray800}"
+                           LineBreakMode="WordWrap"
+                           VerticalOptions="Center"
+                           HorizontalOptions="FillAndExpand"/>
+                </HorizontalStackLayout>
+            </Border>
+            
+            <!-- Bottom spacing -->
+            <BoxView HeightRequest="20" IsVisible="False"/>
+        </VerticalStackLayout>
+    </ScrollView>
 </ContentPage>

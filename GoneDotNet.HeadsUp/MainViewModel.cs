@@ -35,7 +35,15 @@ public partial class GameCategoryViewModel(
 {
     public string Name => name;
     public string Description => description;
-    
+
     [RelayCommand]
-    Task NavToGame() => navigator.NavigateTo<ReadyViewModel>(x => x.Category = Name);
+    async Task NavToGame()
+    {
+        var confirm = await navigator.Confirm(
+            "Start Game", 
+            $"Start a new game in the {Name} category?"
+        );
+        if (confirm)
+            await navigator.NavigateTo<ReadyViewModel>(x => x.Category = Name);
+    }
 }
