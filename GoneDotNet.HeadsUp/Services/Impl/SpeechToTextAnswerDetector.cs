@@ -10,18 +10,18 @@ public class SpeechToTextAnswerDetector(
     ILogger<SpeechToTextAnswerDetector> logger
 ) : IAnswerDetector
 {
-    // TODO: listen for "close enough", "correct", or "the actual answer"
-    // we need to pass in the actual answer to listen to....
-        // could inject/steal game context?  maybe
     ISpeechToText Stt => SpeechToText.Default;
-        
     public event EventHandler<AnswerType>? AnswerDetected;
     
+    Timer? bufferTimer;
+    readonly List<string> wordBuffer = new();
+    readonly object syncLock = new object();
+
     
     public async Task Start()
     {
         var result = await Stt.RequestPermissions();
-        if (!result) // ||  Stt.CurrentState != SpeechToTextState.Stopped)
+        if (!result || Stt.CurrentState != SpeechToTextState.Stopped)
             return;
 
         try
@@ -43,38 +43,82 @@ public class SpeechToTextAnswerDetector(
     public async Task Stop()
     {
         Stt.RecognitionResultUpdated -= SttOnRecognitionResultUpdated;
+        
+        // Clean up the buffer timer
+        lock (syncLock)
+        {
+            bufferTimer?.Dispose();
+            bufferTimer = null;
+            wordBuffer.Clear();
+        }
+        
         await Stt.StopListenAsync();
     }
 
 
     void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
     {
-        var text = args.RecognitionResult;
+        var text = args.RecognitionResult?.Trim();
         if (String.IsNullOrWhiteSpace(text))
             return;
         
-        text = text.Trim().ToLower();
         logger.LogDebug("Incoming Text: " + text);
-        if (String.IsNullOrWhiteSpace(text))
-            return;
+        lock (syncLock)
+        {
+            // Add the word/phrase to our buffer
+            wordBuffer.Add(text);
+            
+            // Reset the buffer timer - we'll process after 800ms of no new words
+            bufferTimer?.Dispose();
+            bufferTimer = new Timer(ProcessBufferedUtterance, null, 800, Timeout.Infinite);
+        }
+    }
 
+    private void ProcessBufferedUtterance(object? state)
+    {
+        string utterance;
+        
+        lock (syncLock)
+        {
+            // Combine all buffered words into a single utterance
+            utterance = string.Join(" ", wordBuffer);
+            
+            // Clear the buffer and dispose timer
+            wordBuffer.Clear();
+            bufferTimer?.Dispose();
+            bufferTimer = null;
+        }
+        
+        if (!String.IsNullOrWhiteSpace(utterance))
+        {
+            logger.LogDebug("Processing buffered utterance: " + utterance);
+            var answer = DetectAnswer(utterance);
+            
+            if (answer != null)
+                this.AnswerDetected?.Invoke(this, answer.Value);
+        }
+    }
+
+
+    AnswerType? DetectAnswer(string text)
+    {
+        logger.LogDebug("Detect Answer: " + text);
         switch (text)
         {
             case "next question":
             case "pass":
-                this.AnswerDetected?.Invoke(this, AnswerType.Pass);
-                break;
+                return AnswerType.Pass;
             
             case "close enough":
             case "correct":
-                this.AnswerDetected?.Invoke(this, AnswerType.Success);
-                break;
+                return AnswerType.Success;
             
             default:
                 var result = gameService.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
                 if (result)
-                    this.AnswerDetected?.Invoke(this, AnswerType.Success);                        
-                break;
+                    return AnswerType.Success;
+
+                return null;
         }
     }
 }
