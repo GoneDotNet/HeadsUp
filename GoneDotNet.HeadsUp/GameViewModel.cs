@@ -22,9 +22,6 @@ public partial class GameViewModel(
     
     public async void OnAppearing()
     {
-        // TODO: pop to root
-        // if (!gameService.IsGameInProgress)
-        //     await navigator.GoBack();
         beeper.SetThemeVolume(0.5f);
         foreach (var detector in answerDetectors)
             await detector.Start();
@@ -38,7 +35,6 @@ public partial class GameViewModel(
         {
             logger.LogWarning(ex, "Failed to start video recording");
         }
-        
         
         _ = this.DoAnswer(this.gameTokenSource.Token);
 
