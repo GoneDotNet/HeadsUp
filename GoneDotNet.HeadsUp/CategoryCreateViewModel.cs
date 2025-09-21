@@ -11,9 +11,7 @@ public partial class CategoryCreateViewModel(
     [NotifyCanExecuteChangedFor(nameof(AddCommand))]
     string name;
     
-    [ObservableProperty]
-    [NotifyCanExecuteChangedFor(nameof(AddCommand))]
-    string description;
+    [ObservableProperty] string description;
 
     
     [RelayCommand(CanExecute = nameof(this.CanAdd))]
@@ -26,14 +24,13 @@ public partial class CategoryCreateViewModel(
         }
         else
         {
-            await navigator.GoBack();
             await navigator.Alert(
                 "Created", 
                 $"Category '{this.Name}' created"
             );
+            await navigator.GoBack();
         }
     }
-    
-    bool CanAdd() => !String.IsNullOrWhiteSpace(this.Name) && 
-                     !String.IsNullOrWhiteSpace(this.Description);
+
+    bool CanAdd() => !String.IsNullOrWhiteSpace(this.Name);
 }

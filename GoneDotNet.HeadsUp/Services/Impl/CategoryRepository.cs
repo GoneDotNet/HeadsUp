@@ -25,7 +25,7 @@ public class CategoryRepository(MySqliteConnection data) : ICategoryRespository
             await data.InsertAsync(new Data
             {
                 Value = value,
-                Description = description
+                Description = description ?? String.Empty
             });
             return true;
         }

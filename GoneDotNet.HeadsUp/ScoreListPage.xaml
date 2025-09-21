@@ -121,7 +121,7 @@
                                         </Label.Shadow>
                                     </Label>
                                     
-                                    <Label Text="{Binding Category, StringFormat='📂 Category: {0}'}" 
+                                    <Label Text="{Binding Category, StringFormat='📂 {0}'}" 
                                            FontSize="18"
                                            FontAttributes="Italic"
                                            TextColor="{StaticResource GameBlue}"

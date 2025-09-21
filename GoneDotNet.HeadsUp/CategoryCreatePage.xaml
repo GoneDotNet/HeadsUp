@@ -79,7 +79,8 @@
                                    PlaceholderColor="{StaticResource Gray400}"
                                    FontSize="16"
                                    TextColor="{StaticResource Gray900}"
-                                   BackgroundColor="Transparent"/>
+                                   BackgroundColor="Transparent"
+                                   ReturnType="Next"/>
                         </Border>
                     </VerticalStackLayout>
                     
