@@ -24,6 +24,7 @@ public static class MauiProgram
 #if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
         builder.Logging.AddDebug();
+        builder.Logging.AddFilter("GoneDotNet.HeadsUp.Services.Impl.SensorAnswerDetector", LogLevel.Warning);
 #endif
         var client = new AzureOpenAIClient(
             new Uri(Constants.AzureOpenAiEndpoint),
