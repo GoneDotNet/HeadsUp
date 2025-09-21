@@ -68,6 +68,7 @@ public partial class GameViewModel(
 
         if (this.Countdown <= 0)
         {
+            // beeper.GameOver();
             await this.StopGame();
             SetState(ScreenState.GameOver);
             await Task.Delay(2000);
