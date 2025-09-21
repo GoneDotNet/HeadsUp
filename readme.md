@@ -2,24 +2,27 @@
 
 Our first app is a clone of the popular Heads Up game, which is a fun and interactive game where players guess words based on clues given by their teammates. The app will feature:
 
-## Up Next
-* Bugs
-  * 
-  * Game Summary Screen
-    * Show answers seen and what the answers were
-    * Show video recording
-  * Score Screen
-    * Video not auto playing and no transparency through score
-  * Success/Pass "Detectors"
-    * Text To Speech
-        * Say the answer (only picking up single words right now)
-        * "Close enough" for success (pass works - same issue)
-        * Phonetic sounds for answers
-    * Accelerator Gesture for Flip Up not working
-* FEATURES
-  * AI
-      * Return phonetic answers
-  
+## Features
+* Takes a video recording of the players during the game
+* Can flip the phone up to pass or down to indicate a correct guess
+* Uses AI to generate answers for the game based on categories
+* AI also returns phonetic answers, so values like Belle and Bell are treated the same
+* Uses Text to Speech to read out the answers
+* Saves game history and scores using SQLite database
+* Simple and intuitive user interface
+* Cross-platform support for iOS and Android using .NET MAUI
+
+## TODO
+* Game Summary Screen
+  * FEATURE: Show answers seen and what the answers were
+  * BUG: Show video recording
+* BUG: MediaElement will turn off audio player sounds
+* SensorAnswerDetector
+  * BUG: Flip Up to pass not working
+  * BUG: Flip down requires an aggressive down
+* FEATURE: AI Phonetic Answers
+* Score Screen
+  * BUG: Video not auto playing and no transparency through score
 
 This project was generated with the Shiny Templates
 > dotnet new install Shiny.Templates

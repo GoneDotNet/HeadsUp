@@ -6,13 +6,14 @@ public partial class MainViewModel(
     IBeepService beeper
 ) : ObservableObject, IPageLifecycleAware
 {
-    [RelayCommand] Task NavToTest() => navigator.NavigateToTest();
     [RelayCommand] Task NavToScoreList() => navigator.NavigateToScoreList();
     [ObservableProperty] GameCategory[] categories;
 
     public void OnAppearing()
     {
         beeper.PlayThemeSong();
+        beeper.SetThemeVolume(1.0f);
+        
         this.Categories =
         [
             new GameCategory(

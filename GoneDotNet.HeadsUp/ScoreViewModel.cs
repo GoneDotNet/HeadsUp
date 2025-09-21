@@ -11,10 +11,16 @@ public partial class ScoreViewModel(
     [ObservableProperty] string? videoUrl;
     [ObservableProperty] string? category;
     [ObservableProperty] DateTimeOffset createdAt;
-    [ObservableProperty] int correctAnswers;
-
+    [ObservableProperty] int score;
+    [ObservableProperty] List<AnswerResult> answers = [];
+    
     [ShellProperty] public Guid GameId { get; set; }
-    [ShellProperty] public bool IsFromGame { get; set; }
+    
+    [ShellProperty] 
+    [ObservableProperty]
+    public partial bool IsFromGame { get; set; }
+
+    
     [RelayCommand] Task Back() => this.IsFromGame 
         ? navigator.PopToRoot() 
         : navigator.GoBack();
@@ -26,9 +32,20 @@ public partial class ScoreViewModel(
 
         this.Category = game.Category;
         this.CreatedAt = game.CreatedAt;
-        this.CorrectAnswers = game.Answers.Count(y => y.AnswerType == AnswerType.Success);
+        this.Score = game.Answers.Count(y => y.AnswerType == AnswerType.Success);
         
         this.VideoUrl = Path.Combine(fileSystem.AppDataDirectory, game.GameId + ".mp4");
+        this.Answers = game.Answers
+            .Select(x => new AnswerResult(
+                x.Answer, 
+                x.AnswerType switch
+                {
+                    AnswerType.Success => AnswerResultType.Success,
+                    AnswerType.Pass => AnswerResultType.Pass,
+                    _ => AnswerResultType.Unanswered
+                }
+            ))
+            .ToList();
     }
 
     
@@ -36,4 +53,13 @@ public partial class ScoreViewModel(
     {
         beeper.SetThemeVolume(1.0f);
     }
+}
+
+public record AnswerResult(string Text, AnswerResultType ResultType);
+
+public enum AnswerResultType
+{
+    Success,
+    Pass,
+    Unanswered
 }

@@ -8,166 +8,243 @@
              Shell.NavBarIsVisible="False">
     
     <Grid>
+        <!-- Background Video -->
         <toolkit:MediaElement Source="{Binding VideoUrl}"
                               ShouldAutoPlay="True"
                               ShouldShowPlaybackControls="False"
-                              Volume="1.0" 
+                              Volume="0.3" 
                               ShouldLoopPlayback="True" 
                               HorizontalOptions="Fill"
                               VerticalOptions="Fill" />
         
+        <!-- Semi-transparent overlay for better readability -->
         <BoxView BackgroundColor="Black" 
-                 Opacity="0.4"
+                 Opacity="0.2"
                  HorizontalOptions="Fill"
                  VerticalOptions="Fill" />
         
-        <Grid RowDefinitions="Auto, *, Auto" 
-              Margin="20"
-              VerticalOptions="Fill">
-            
-            <!-- Header overlay -->
-            <Border Grid.Row="0" 
-                    BackgroundColor="{StaticResource White}"
-                    StrokeThickness="0"
-                    Padding="20,15"
-                    Margin="0,40,0,20"
-                    Opacity="0.95">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="25"/>
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.4"/>
-                </Border.Shadow>
-                <Label Text="🎬 GAME REPLAY" 
-                       FontSize="28"
-                       FontAttributes="Bold"
-                       TextColor="{StaticResource GamePurple}"
-                       HorizontalOptions="Center">
-                    <Label.Shadow>
-                        <Shadow Brush="{StaticResource GameLightPurple}" 
-                                Offset="1,1" 
-                                Radius="2" 
-                                Opacity="0.3"/>
-                    </Label.Shadow>
-                </Label>
-            </Border>
-            
-            <!-- Game Summary Card -->
-            <StackLayout Grid.Row="1" 
-                         VerticalOptions="Center"
-                         HorizontalOptions="Center"
-                         Spacing="20">
+        <!-- Scrollable Content Overlay -->
+        <ScrollView Padding="20" 
+                    VerticalScrollBarVisibility="Never">
+            <VerticalStackLayout Spacing="20">
                 
-                <!-- Category Card -->
-                <Border BackgroundColor="{StaticResource White}"
+                <!-- Header Section -->
+                <Border BackgroundColor="{StaticResource GamePurple}"
                         StrokeThickness="0"
-                        Padding="30,20"
-                        Margin="20,0"
-                        Opacity="0.93">
-                    <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="20"/>
-                    </Border.StrokeShape>
-                    <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="0.3"/>
-                    </Border.Shadow>
-                    <StackLayout Spacing="10">
-                        <Label Text="📂 Category" 
-                               FontSize="16"
-                               FontAttributes="Italic"
-                               TextColor="{StaticResource Gray600}"
-                               HorizontalOptions="Center"/>
-                        <Label Text="{Binding Category}" 
-                               FontSize="24"
-                               FontAttributes="Bold"
-                               TextColor="{StaticResource GamePurple}"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center"/>
-                    </StackLayout>
-                </Border>
-                
-                <!-- Score Display -->
-                <Border BackgroundColor="{StaticResource GameGreen}"
-                        StrokeThickness="0"
-                        Padding="40,30"
-                        Margin="30,0"
-                        Opacity="0.95">
+                        Padding="25,20"
+                        Margin="0,40,0,0">
                     <Border.StrokeShape>
                         <RoundRectangle CornerRadius="25"/>
                     </Border.StrokeShape>
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,5" Radius="20" Opacity="0.4"/>
+                        <Shadow Brush="Black" Offset="0,4" Radius="15" Opacity="0.4"/>
                     </Border.Shadow>
-                    <StackLayout Spacing="5">
-                        <Label Text="🏆 FINAL SCORE" 
-                               FontSize="18"
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="🏆 GAME RESULTS" 
+                               FontSize="28"
                                FontAttributes="Bold"
                                TextColor="White"
-                               HorizontalOptions="Center"
-                               Opacity="0.9"/>
-                        <Label Text="{Binding CorrectAnswers, StringFormat='{0} Correct!'}" 
-                               FontSize="36"
-                               FontAttributes="Bold"
-                               TextColor="White"
-                               HorizontalOptions="Center"
-                               HorizontalTextAlignment="Center">
+                               HorizontalOptions="Center">
                             <Label.Shadow>
-                                <Shadow Brush="Black" Offset="2,2" Radius="4" Opacity="0.6"/>
+                                <Shadow Brush="Black" Offset="1,1" Radius="3" Opacity="0.7"/>
                             </Label.Shadow>
                         </Label>
-                    </StackLayout>
+                        
+                        <Label Text="{Binding Category}" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GameYellow}"
+                               HorizontalOptions="Center"/>
+                    </VerticalStackLayout>
                 </Border>
                 
-                <!-- Date Card -->
-                <Border BackgroundColor="{StaticResource GameBlue}"
+                <!-- Score Summary -->
+                <Border BackgroundColor="{StaticResource White}"
                         StrokeThickness="0"
-                        Padding="25,15"
-                        Margin="40,0"
-                        Opacity="0.92">
+                        Padding="20"
+                        Opacity="0.95">
                     <Border.StrokeShape>
-                        <RoundRectangle CornerRadius="18"/>
+                        <RoundRectangle CornerRadius="20"/>
                     </Border.StrokeShape>
                     <Border.Shadow>
-                        <Shadow Brush="Black" Offset="0,3" Radius="12" Opacity="0.3"/>
+                        <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.3"/>
                     </Border.Shadow>
-                    <Label Text="{Binding CreatedAt, StringFormat='📅 {0:MMMM dd, yyyy}'}" 
-                           FontSize="16"
+                    <Grid ColumnDefinitions="*,*" 
+                          RowDefinitions="Auto,Auto" 
+                          RowSpacing="10"
+                          ColumnSpacing="20">
+                        
+                        <Label Grid.Row="0" Grid.Column="0"
+                               Text="📊 Final Score"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GamePurple}"
+                               HorizontalOptions="Center"/>
+                        
+                        <Label Grid.Row="1" Grid.Column="0"
+                               Text="{Binding Score}"
+                               FontSize="32"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GameOrange}"
+                               HorizontalOptions="Center"/>
+                        
+                        <Label Grid.Row="0" Grid.Column="1"
+                               Text="📅 Date Played"
+                               FontSize="16"
+                               FontAttributes="Bold"
+                               TextColor="{StaticResource GamePurple}"
+                               HorizontalOptions="Center"/>
+                        
+                        <Label Grid.Row="1" Grid.Column="1"
+                               Text="{Binding CreatedAt, StringFormat='{0:MM/dd/yyyy}'}"
+                               FontSize="16"
+                               TextColor="{StaticResource Gray600}"
+                               HorizontalOptions="Center"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Main Menu Button -->
+                <Border BackgroundColor="{StaticResource GamePink}"
+                        StrokeThickness="0"
+                        Padding="20,15"
+                        Margin="0,20,0,0">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="20"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.4"/>
+                    </Border.Shadow>
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding BackCommand}" />
+                    </Border.GestureRecognizers>
+                    <HorizontalStackLayout Spacing="10" 
+                                         HorizontalOptions="Center">
+                        <Label Text="🏠" 
+                               FontSize="24"
+                               VerticalOptions="Center"/>
+                        <Label Text="" 
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="White"
+                               VerticalOptions="Center">
+                            <Label.Triggers>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding IsFromGame}"
+                                             Value="True">
+                                    <Setter Property="Text" Value="GO TO MAIN MENU" />
+                                </DataTrigger>
+                                <DataTrigger TargetType="Label"
+                                             Binding="{Binding IsFromGame}"
+                                             Value="False">
+                                    <Setter Property="Text" Value="GO BACK TO SCORES" />
+                                </DataTrigger>
+                            </Label.Triggers>
+                            <Label.Shadow>
+                                <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.6"/>
+                            </Label.Shadow>
+                        </Label>
+                    </HorizontalStackLayout>
+                </Border>
+                
+                <!-- Answers Header -->
+                <Border BackgroundColor="{StaticResource GameBlue}"
+                        StrokeThickness="0"
+                        Padding="20,15">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="15"/>
+                    </Border.StrokeShape>
+                    <Border.Shadow>
+                        <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.3"/>
+                    </Border.Shadow>
+                    <Label Text="📝 ANSWER BREAKDOWN" 
+                           FontSize="20"
                            FontAttributes="Bold"
                            TextColor="White"
-                           HorizontalOptions="Center"
-                           HorizontalTextAlignment="Center">
+                           HorizontalOptions="Center">
                         <Label.Shadow>
-                            <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.4"/>
+                            <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.6"/>
                         </Label.Shadow>
                     </Label>
                 </Border>
-            </StackLayout>
-            
-            <!-- Bottom navigation overlay -->
-            <Border Grid.Row="2"
-                    BackgroundColor="{StaticResource GameOrange}"
-                    StrokeThickness="0"
-                    Padding="25,15"
-                    Margin="20,20,20,40"
-                    Opacity="0.9">
-                <Border.StrokeShape>
-                    <RoundRectangle CornerRadius="20"/>
-                </Border.StrokeShape>
-                <Border.Shadow>
-                    <Shadow Brush="Black" Offset="0,3" Radius="10" Opacity="0.4"/>
-                </Border.Shadow>
-                <Label Text="🎯 Tap to return to main menu"
-                       FontSize="16"
-                       FontAttributes="Bold"
-                       TextColor="White"
-                       HorizontalOptions="Center">
-                    <Label.Shadow>
-                        <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.4"/>
-                    </Label.Shadow>
-                </Label>
-                <Border.GestureRecognizers>
-                    <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type headsUp:ScorePage}}, Path=BindingContext.BackCommand}" />
-                </Border.GestureRecognizers>
-            </Border>
-        </Grid>
+                
+                <!-- Answers List -->
+                <VerticalStackLayout BindableLayout.ItemsSource="{Binding Answers}"
+                            Spacing="12">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate x:DataType="headsUp:AnswerResult">
+                            <Border StrokeThickness="0"
+                                    Padding="20,15"
+                                    Opacity="0.95">
+                                <Border.StrokeShape>
+                                    <RoundRectangle CornerRadius="12"/>
+                                </Border.StrokeShape>
+                                <Border.Shadow>
+                                    <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.2"/>
+                                </Border.Shadow>
+                                <Border.Triggers>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ResultType}"
+                                                 Value="{x:Static headsUp:AnswerResultType.Success}">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource GameGreen}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ResultType}"
+                                                 Value="{x:Static headsUp:AnswerResultType.Pass}">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource GameOrange}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Border"
+                                                 Binding="{Binding ResultType}"
+                                                 Value="{x:Static headsUp:AnswerResultType.Unanswered}">
+                                        <Setter Property="BackgroundColor" Value="{StaticResource Gray500}" />
+                                    </DataTrigger>
+                                </Border.Triggers>
+                                
+                                <Grid ColumnDefinitions="Auto,*" 
+                                      ColumnSpacing="15">
+                                    
+                                    <!-- Result Icon -->
+                                    <Label Grid.Column="0"
+                                           FontSize="24"
+                                           VerticalOptions="Center">
+                                        <Label.Triggers>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding ResultType}"
+                                                         Value="{x:Static headsUp:AnswerResultType.Success}">
+                                                <Setter Property="Text" Value="✅" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding ResultType}"
+                                                         Value="{x:Static headsUp:AnswerResultType.Pass}">
+                                                <Setter Property="Text" Value="⏭️" />
+                                            </DataTrigger>
+                                            <DataTrigger TargetType="Label"
+                                                         Binding="{Binding ResultType}"
+                                                         Value="{x:Static headsUp:AnswerResultType.Unanswered}">
+                                                <Setter Property="Text" Value="⏰" />
+                                            </DataTrigger>
+                                        </Label.Triggers>
+                                    </Label>
+                                    
+                                    <!-- Answer Text -->
+                                    <Label Grid.Column="1"
+                                           Text="{Binding Text}"
+                                           FontSize="18"
+                                           FontAttributes="Bold"
+                                           TextColor="White"
+                                           VerticalOptions="Center">
+                                        <Label.Shadow>
+                                            <Shadow Brush="Black" Offset="1,1" Radius="2" Opacity="0.5"/>
+                                        </Label.Shadow>
+                                    </Label>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </VerticalStackLayout>
+                
+                <!-- Bottom Spacing -->
+                <BoxView HeightRequest="40" IsVisible="False" />
+            </VerticalStackLayout>
+        </ScrollView>
     </Grid>
 </ContentPage>

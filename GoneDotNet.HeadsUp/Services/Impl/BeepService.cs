@@ -25,15 +25,13 @@ public class BeepService : IBeepService
     }
     
     
-    bool isPlaying = false;
     public void SetThemeVolume(float volume) => themeSong.Volume = volume;
     public void PlayThemeSong()
     {
-        if (isPlaying)
+        if (themeSong.IsPlaying)
             return;
 
         this.logger.LogDebug("Playing theme song");
-        isPlaying = true;
         themeSong.Loop = true;
         themeSong.Play();
     }
@@ -41,18 +39,17 @@ public class BeepService : IBeepService
     
     public void StopThemeSong()
     {
-        if (!isPlaying)
+        if (!themeSong.IsPlaying)
             return;
 
         this.logger.LogDebug("Stopping theme song");
-        isPlaying = false;
         themeSong.Stop();
     }
     
     
     public void Countdown()
     {
-        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(500));
         countdown.Play();
         this.logger.LogDebug("Countdown Beep");
     }
@@ -60,7 +57,7 @@ public class BeepService : IBeepService
     
     public void Success()
     {
-        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(500));
         success.Play();
         this.logger.LogDebug("Success Beep");
     }
@@ -68,7 +65,7 @@ public class BeepService : IBeepService
 
     public void Pass()
     {
-        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(100));
+        Vibration.Default.Vibrate(TimeSpan.FromMilliseconds(500));
         pass.Play();
         this.logger.LogDebug("Pass Beep");
     }

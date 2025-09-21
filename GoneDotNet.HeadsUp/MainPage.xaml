@@ -15,9 +15,6 @@
     </ContentPage.Background>
     
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="🧪 Test" 
-                     Command="{Binding NavToTestCommand}"/>
-        
         <ToolbarItem Text="🏆 Scores"
                      Command="{Binding NavToScoreListCommand}"/>
     </ContentPage.ToolbarItems>
