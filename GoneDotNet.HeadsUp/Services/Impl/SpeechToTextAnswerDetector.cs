@@ -114,10 +114,18 @@ public class SpeechToTextAnswerDetector(
                 return AnswerType.Success;
             
             default:
-                var result = gameService.CurrentAnswer?.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
+                
+                var result = gameService.CurrentAnswer?.DisplayValue.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
                 if (result)
                     return AnswerType.Success;
 
+                result = gameService
+                    .CurrentAnswer?
+                    .AlternateVersions?
+                    .Any(x => x.Contains(text, StringComparison.InvariantCultureIgnoreCase)) ?? false;
+                if (result)
+                    return AnswerType.Success;
+                
                 return null;
         }
     }

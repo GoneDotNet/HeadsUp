@@ -6,14 +6,14 @@ public class GameService(MySqliteConnection conn) : IGameService
 {
     public bool IsGameInProgress { get; private set; }
     public Guid Id { get; private set; }
-    public string CurrentAnswer { get; private set; }
+    public ProvidedAnswer CurrentAnswer { get; private set; }
     public string CurrentCategory { get; private set; }
     public int AnswerNumber { get; private set; }
 
     readonly List<(string Answer, DateTimeOffset Timestamp, AnswerType AnswerType)> history = new();
-    string[]? answers;
+    ProvidedAnswer[]? answers;
     
-    public void StartGame(string category, string[] answers)
+    public void StartGame(string category, ProvidedAnswer[] answers)
     {
         if (this.IsGameInProgress)
             return;
@@ -62,7 +62,7 @@ public class GameService(MySqliteConnection conn) : IGameService
         {
             Id = Guid.NewGuid(),
             GameId = this.Id,
-            Value = this.CurrentAnswer,
+            Value = this.CurrentAnswer.DisplayValue,
             Timestamp = DateTimeOffset.UtcNow,
             AnswerType = null
         });
@@ -72,7 +72,7 @@ public class GameService(MySqliteConnection conn) : IGameService
     
     public void MarkAnswer(AnswerType answerType)
     {
-        this.history.Add((this.CurrentAnswer, DateTimeOffset.UtcNow, answerType));
+        this.history.Add((this.CurrentAnswer.DisplayValue, DateTimeOffset.UtcNow, answerType));
         
         this.AnswerNumber++;
         this.CurrentAnswer = this.answers[this.AnswerNumber - 1];
