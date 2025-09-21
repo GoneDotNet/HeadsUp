@@ -13,6 +13,8 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * Cross-platform support for iOS and Android using .NET MAUI
 
 ## TODO
+* FEATURE: AI Phonetic Answers and structured data
+* BUG: Prevent android back button on ready/game screens
 * Game Summary Screen
   * FEATURE: Show answers seen and what the answers were
   * BUG: Show video recording
@@ -20,7 +22,7 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * SensorAnswerDetector
   * BUG: Flip Up to pass not working
   * BUG: Flip down requires an aggressive down
-* FEATURE: AI Phonetic Answers
+  * ENHANCEMENT: Should account for device orientation
 * Score Screen
   * BUG: Video not auto playing and no transparency through score
 
