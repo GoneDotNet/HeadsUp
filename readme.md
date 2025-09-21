@@ -17,9 +17,7 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * BUG: Prevent android back button on ready/game screens
 * BUG: MediaElement will turn off audio player sounds
 * SensorAnswerDetector
-  * BUG: Flip Up to pass not working
-  * BUG: Flip down requires an aggressive down
-  * ENHANCEMENT: Should account for device orientation
+  * BUG: Its more of a flip left/right 
 * Score Screen
   * BUG: Video not auto playing and no transparency through score
 

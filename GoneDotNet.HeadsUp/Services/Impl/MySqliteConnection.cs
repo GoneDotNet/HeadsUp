@@ -61,6 +61,7 @@ public class GameAnswer
     public Guid Id { get; set; }
     public Guid GameId { get; set; }
     public string Value { get; set; }
+    public DateTimeOffset Timestamp { get; set; }
     public AnswerType? AnswerType { get; set; }
 }
 

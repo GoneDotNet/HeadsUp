@@ -10,7 +10,7 @@ public class GameService(MySqliteConnection conn) : IGameService
     public string CurrentCategory { get; private set; }
     public int AnswerNumber { get; private set; }
 
-    readonly List<(string Answer, AnswerType AnswerType)> history = new();
+    readonly List<(string Answer, DateTimeOffset Timestamp, AnswerType AnswerType)> history = new();
     string[]? answers;
     
     public void StartGame(string category, string[] answers)
@@ -44,6 +44,7 @@ public class GameService(MySqliteConnection conn) : IGameService
             Category = this.CurrentCategory,
             CreatedAt = DateTimeOffset.UtcNow
         });
+        
         foreach (var answer in this.history)
         {
             sconn.Insert(new GameAnswer
@@ -51,6 +52,7 @@ public class GameService(MySqliteConnection conn) : IGameService
                 Id = Guid.NewGuid(),
                 GameId = this.Id,
                 Value = answer.Answer,
+                Timestamp = answer.Timestamp,
                 AnswerType = answer.AnswerType
             });
         }
@@ -61,6 +63,7 @@ public class GameService(MySqliteConnection conn) : IGameService
             Id = Guid.NewGuid(),
             GameId = this.Id,
             Value = this.CurrentAnswer,
+            Timestamp = DateTimeOffset.UtcNow,
             AnswerType = null
         });
         sconn.Commit();
@@ -69,11 +72,12 @@ public class GameService(MySqliteConnection conn) : IGameService
     
     public void MarkAnswer(AnswerType answerType)
     {
-        this.history.Add((this.CurrentAnswer, answerType));
+        this.history.Add((this.CurrentAnswer, DateTimeOffset.UtcNow, answerType));
         
         this.AnswerNumber++;
         this.CurrentAnswer = this.answers[this.AnswerNumber - 1];
     }
+    
 
     public async Task<GameResult> GetGameResult(Guid gameId)
     {
@@ -89,6 +93,7 @@ public class GameService(MySqliteConnection conn) : IGameService
             game.Category,
             game.CreatedAt,
             gameAnswers
+                .OrderBy(x => x.Timestamp)
                 .Select(ga => (ga.Value, ga.AnswerType))
                 .ToList()
         );
@@ -102,7 +107,7 @@ public class GameService(MySqliteConnection conn) : IGameService
             .ToListAsync();
         
         var gameAnswers = await conn.Table<GameAnswer>()
-            .OrderBy(ga => ga.Id)
+            .OrderBy(ga => ga.Timestamp)
             .ToListAsync();
         
         return games
