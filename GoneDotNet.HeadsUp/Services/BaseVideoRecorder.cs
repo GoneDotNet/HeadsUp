@@ -1,6 +1,6 @@
 namespace GoneDotNet.HeadsUp.Services;
 
-public abstract class BaseVideoRecorder : IVideoRecorder
+public abstract class BaseVideoRecorder(ILogger logger) : IVideoRecorder
 {
     public string? CurrentOutputPath { get; private set; }
 
@@ -9,8 +9,12 @@ public abstract class BaseVideoRecorder : IVideoRecorder
     public abstract bool IsSupported { get; }
     protected abstract Task StartRecordingPlatformAsync(string outputPath, bool useFrontCamera, bool captureAudio);
     protected abstract string? StopRecordingPlatform();
-    
-    protected virtual void OnError(Exception ex) => ErrorOccurred?.Invoke(this, ex);
+
+    protected virtual void OnError(Exception ex)
+    {
+        logger.LogError(ex, "Error in video recorder");
+        ErrorOccurred?.Invoke(this, ex);
+    }
 
     protected virtual void OnStatusChanged(bool isRecording)
     {

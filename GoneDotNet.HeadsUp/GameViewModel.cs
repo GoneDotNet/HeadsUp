@@ -29,7 +29,7 @@ public partial class GameViewModel(
         try
         {
             var path = Path.Combine(fileSystem.AppDataDirectory, gameService.Id + ".mp4");
-            await videoRecorder.StartRecording(path, true, false);
+            await videoRecorder.StartRecording(path, true, true);
         }
         catch (Exception ex)
         {

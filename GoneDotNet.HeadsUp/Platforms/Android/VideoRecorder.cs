@@ -10,7 +10,7 @@ namespace GoneDotNet.HeadsUp.Services;
 
 
 [Singleton(Type = typeof(IVideoRecorder))]
-public class VideoRecorder : BaseVideoRecorder
+public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(logger)
 {
     CameraDevice? _cameraDevice;
     CameraCaptureSession? _captureSession;

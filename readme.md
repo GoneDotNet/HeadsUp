@@ -13,13 +13,12 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * Cross-platform support for iOS and Android using .NET MAUI
 
 ## TODO
+* Splash screen looks like junk
 * FEATURE: AI Phonetic Answers and structured data
 * BUG: Prevent android back button on ready/game screens
 * BUG: MediaElement will turn off audio player sounds
 * SensorAnswerDetector
   * BUG: Its more of a flip left/right 
-* Score Screen
-  * BUG: Video not auto playing and no transparency through score
 
 This project was generated with the Shiny Templates
 > dotnet new install Shiny.Templates

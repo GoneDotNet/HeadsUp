@@ -6,7 +6,7 @@ namespace GoneDotNet.HeadsUp.Services;
 
 
 [Singleton(Type = typeof(IVideoRecorder))]
-public class VideoRecorder : BaseVideoRecorder
+public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(logger)
 {
     AVCaptureSession? _captureSession;
     AVCaptureMovieFileOutput? _movieOutput;
@@ -77,9 +77,10 @@ public class VideoRecorder : BaseVideoRecorder
 
             return true;
         }
-        finally
+        catch (Exception ex)
         {
             this.Cleanup();
+            return false;
         }
     }
 

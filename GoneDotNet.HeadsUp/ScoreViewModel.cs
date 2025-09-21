@@ -27,14 +27,14 @@ public partial class ScoreViewModel(
     
     public async void OnAppearing()
     {
-        beeper.SetThemeVolume(0.5f);
+        beeper.SetThemeVolume(0.3f);
         var game = await gameService.GetGameResult(this.GameId);
 
         this.Category = game.Category;
         this.CreatedAt = game.CreatedAt;
         this.Score = game.Answers.Count(y => y.AnswerType == AnswerType.Success);
-        
         this.VideoUrl = Path.Combine(fileSystem.AppDataDirectory, game.GameId + ".mp4");
+        
         this.Answers = game.Answers
             .Select(x => new AnswerResult(
                 x.Answer, 
