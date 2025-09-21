@@ -8,6 +8,7 @@ public partial class MainViewModel(
 ) : ObservableObject, IPageLifecycleAware
 {
     [RelayCommand] Task NavToScoreList() => navigator.NavigateToScoreList();
+    [RelayCommand] Task NavToManageCategories() => navigator.NavigateToCategoryList();
     [ObservableProperty] GameCategoryViewModel[] categories;
 
     public async void OnAppearing()
