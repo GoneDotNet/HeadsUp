@@ -12,6 +12,9 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * Simple and intuitive user interface
 * Cross-platform support for iOS and Android using .NET MAUI
 
+## SETUP
+* You need to supply your own Azure OpenAI URI & API Key in the Constants.cs file
+
 ## TODO
 * Splash screen looks like junk
 * FEATURE: AI Phonetic Answers and structured data
@@ -19,6 +22,7 @@ Our first app is a clone of the popular Heads Up game, which is a fun and intera
 * BUG: MediaElement will turn off audio player sounds
 * SensorAnswerDetector
   * BUG: Its more of a flip left/right 
+* Try to use device AI instead of Azure OpenAI
 
 This project was generated with the Shiny Templates
 > dotnet new install Shiny.Templates
