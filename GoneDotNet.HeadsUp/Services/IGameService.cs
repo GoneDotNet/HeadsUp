@@ -5,11 +5,11 @@ public interface IGameService
 {
     bool IsGameInProgress { get; }
     Guid Id { get; }
-    string CurrentAnswer { get; }
+    ProvidedAnswer CurrentAnswer { get; }
     string CurrentCategory { get; }
     int AnswerNumber { get; }
 
-    void StartGame(string category, string[] answers);
+    void StartGame(string category, ProvidedAnswer[] answers);
     void EndGame();
     
     void MarkAnswer(AnswerType answerType);

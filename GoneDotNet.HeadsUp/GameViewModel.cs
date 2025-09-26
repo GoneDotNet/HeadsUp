@@ -87,7 +87,7 @@ public partial class GameViewModel(
         while (!cancellationToken.IsCancellationRequested)
         {
             SetState(ScreenState.InAnswer);
-            this.AnswerText = gameService.CurrentAnswer;
+            this.AnswerText = gameService.CurrentAnswer.DisplayValue;
             
             var answerType = await this.WaitForAnswer(cancellationToken);
             gameService.MarkAnswer(answerType);
