@@ -2,7 +2,10 @@ namespace GoneDotNet.HeadsUp.Services.Impl;
 
 
 [Singleton]
-public class GameService(MySqliteConnection conn) : IGameService
+public class GameService(
+    MySqliteConnection conn,
+    ILogger<GameService> logger
+) : IGameService
 {
     public bool IsGameInProgress { get; private set; }
     public Guid Id { get; private set; }
@@ -121,5 +124,30 @@ public class GameService(MySqliteConnection conn) : IGameService
                     .ToList()
             ))
             .ToList();
+    }
+
+
+    public async Task<List<string>> GetRecentAnswersByCategory(string categoryName)
+    {
+        var answers = await conn.QueryAsync<GameAnswer>(
+            """
+            SELECT 
+                DISTINCT ga.Value
+            FROM 
+                GameAnswer ga
+            JOIN Game g ON ga.GameId = g.Id
+            WHERE g.Category = ?
+            ORDER BY ga.Timestamp DESC
+            LIMIT 10
+            """,
+            categoryName
+        );
+
+        logger.LogDebug(
+            "GetRecentAnswersByCategory: {answersCount} for category '{categoryName}'",
+            answers.Count,
+            categoryName
+        );
+        return answers.Select(x => x.Value).ToList();
     }
 }

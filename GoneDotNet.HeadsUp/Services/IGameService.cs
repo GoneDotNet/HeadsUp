@@ -8,7 +8,7 @@ public interface IGameService
     ProvidedAnswer CurrentAnswer { get; }
     string CurrentCategory { get; }
     int AnswerNumber { get; }
-
+    
     void StartGame(string category, ProvidedAnswer[] answers);
     void EndGame();
     
@@ -16,6 +16,7 @@ public interface IGameService
 
     Task<GameResult> GetGameResult(Guid gameId);
     Task<List<GameResult>> GetGameResults();
+    Task<List<string>> GetRecentAnswersByCategory(string categoryName);
 }
 
 public record GameResult(
