@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <TargetFrameworks>$(TargetFrameworks);net9.0-ios</TargetFrameworks>
-        <TargetFrameworks>$(TargetFrameworks);net9.0-android</TargetFrameworks>
+        <TargetFrameworks>$(TargetFrameworks);net10.0-ios</TargetFrameworks>
+        <TargetFrameworks>$(TargetFrameworks);net10.0-android</TargetFrameworks>
         <OutputType>Exe</OutputType>
         <RootNamespace>GoneDotNet.HeadsUp</RootNamespace>
         <SingleProject>true</SingleProject>
@@ -16,13 +16,13 @@
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
 
-        <MauiVersion>9.0.120</MauiVersion>
+        <MauiVersion>10.0.10</MauiVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
         <DefineConstants>$(DefineConstants);PLATFORM</DefineConstants>
         <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
-        <TargetPlatformVersion>35</TargetPlatformVersion>
+        <TargetPlatformVersion>36</TargetPlatformVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android' AND '$(Configuration)' == 'Debug'">
@@ -44,8 +44,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <TrimmerRootDescriptor Include="Linker.xml" Condition="'$(Configuration)' == 'Release'"/>
-
         <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4"/>
         <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128"/>
 
