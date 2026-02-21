@@ -13,7 +13,7 @@ public static class MauiProgram
             .CreateBuilder()
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
-            .UseMauiCommunityToolkitMediaElement()
+            .UseMauiCommunityToolkitMediaElement(false)
             .UseShinyShell(x => x.AddGeneratedMaps())
             .ConfigureFonts(fonts =>
             {
