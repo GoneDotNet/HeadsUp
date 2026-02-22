@@ -28,20 +28,31 @@
             <Border.Shadow>
                 <Shadow Brush="Black" Offset="0,2" Radius="8" Opacity="0.2"/>
             </Border.Shadow>
-            <StackLayout>
-                <Label Text="🎮 NEW GAME" 
-                       FontAttributes="Bold"
-                       FontSize="32"
-                       TextColor="{StaticResource GamePurple}"
-                       HorizontalOptions="Center"
-                       Margin="0,0,0,5"/>
-                
-                <Label Text="Select a Category to Start Playing!" 
-                       FontSize="18"
-                       TextColor="{StaticResource GameBlue}"
-                       HorizontalOptions="Center"
-                       FontAttributes="Italic"/>
-            </StackLayout>
+            <Grid>
+                <StackLayout>
+                    <Label Text="🎮 NEW GAME"
+                           FontAttributes="Bold"
+                           FontSize="32"
+                           TextColor="{StaticResource GamePurple}"
+                           HorizontalOptions="Center"
+                           Margin="0,0,0,5"/>
+
+                    <Label Text="Select a Category to Start Playing!"
+                           FontSize="18"
+                           TextColor="{StaticResource GameBlue}"
+                           HorizontalOptions="Center"
+                           FontAttributes="Italic"/>
+                </StackLayout>
+
+                <Label Text="{Binding ThemeSongIcon}"
+                       FontSize="24"
+                       HorizontalOptions="End"
+                       VerticalOptions="Start">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Command="{Binding ToggleThemeSongCommand}" />
+                    </Label.GestureRecognizers>
+                </Label>
+            </Grid>
         </Border>
         
         <CollectionView Grid.Row="1" 

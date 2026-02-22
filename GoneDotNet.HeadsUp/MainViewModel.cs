@@ -10,11 +10,38 @@ public partial class MainViewModel(
     [RelayCommand] Task NavToScoreList() => navigator.NavigateToScoreList();
     [RelayCommand] Task NavToManageCategories() => navigator.NavigateToCategoryList();
     [ObservableProperty] GameCategoryViewModel[] categories;
+    [ObservableProperty] string themeSongIcon = GetThemeSongIcon();
+
+    [RelayCommand]
+    void ToggleThemeSong()
+    {
+        var enabled = Preferences.Default.Get("ThemeSongEnabled", true);
+        enabled = !enabled;
+        Preferences.Default.Set("ThemeSongEnabled", enabled);
+        this.ThemeSongIcon = GetThemeSongIcon();
+
+        if (enabled)
+        {
+            beeper.PlayThemeSong();
+            beeper.SetThemeVolume(1.0f);
+        }
+        else
+        {
+            beeper.StopThemeSong();
+        }
+    }
+
+    static string GetThemeSongIcon() =>
+        Preferences.Default.Get("ThemeSongEnabled", true) ? "🔊" : "🔇";
 
     public async void OnAppearing()
     {
-        beeper.PlayThemeSong();
-        beeper.SetThemeVolume(1.0f);
+        this.ThemeSongIcon = GetThemeSongIcon();
+        if (Preferences.Default.Get("ThemeSongEnabled", true))
+        {
+            beeper.PlayThemeSong();
+            beeper.SetThemeVolume(1.0f);
+        }
 
         var cats = await repository.GetAll();
         this.Categories = cats

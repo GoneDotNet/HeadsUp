@@ -31,6 +31,9 @@ public class BeepService : IBeepService
         if (themeSong.IsPlaying)
             return;
 
+        if (!Preferences.Default.Get("ThemeSongEnabled", true))
+            return;
+
         this.logger.LogDebug("Playing theme song");
         themeSong.Loop = true;
         themeSong.Play();
