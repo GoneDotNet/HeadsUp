@@ -19,6 +19,10 @@ public partial class GameViewModel(
     [ObservableProperty] int countdown = 60;
     [ObservableProperty] string stateText = "";
     [ObservableProperty] Color stateColor = Colors.Blue;
+    [ObservableProperty] bool controlsVisible = true;
+
+    [RelayCommand]
+    void ToggleControls() => ControlsVisible = !ControlsVisible;
     
     public async void OnAppearing()
     {
