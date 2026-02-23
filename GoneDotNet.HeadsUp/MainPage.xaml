@@ -44,14 +44,20 @@
                            FontAttributes="Italic"/>
                 </StackLayout>
 
-                <Label Text="{Binding ThemeSongIcon}"
-                       FontSize="24"
-                       HorizontalOptions="End"
-                       VerticalOptions="Start">
-                    <Label.GestureRecognizers>
+                <Border BackgroundColor="{StaticResource GameLightPurple}"
+                        StrokeThickness="0"
+                        Padding="8,4"
+                        HorizontalOptions="End"
+                        VerticalOptions="Start">
+                    <Border.StrokeShape>
+                        <RoundRectangle CornerRadius="12"/>
+                    </Border.StrokeShape>
+                    <Border.GestureRecognizers>
                         <TapGestureRecognizer Command="{Binding ToggleThemeSongCommand}" />
-                    </Label.GestureRecognizers>
-                </Label>
+                    </Border.GestureRecognizers>
+                    <Label Text="{Binding ThemeSongIcon}"
+                           FontSize="24"/>
+                </Border>
             </Grid>
         </Border>
         

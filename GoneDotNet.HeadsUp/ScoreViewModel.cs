@@ -14,15 +14,19 @@ public partial class ScoreViewModel(
     [ObservableProperty] int score;
     [ObservableProperty] List<AnswerResult> answers = [];
     
+    [ObservableProperty] bool controlsVisible = true;
+
     [ShellProperty] public Guid GameId { get; set; }
-    
-    [ShellProperty] 
+
+    [ShellProperty]
     [ObservableProperty]
     public partial bool IsFromGame { get; set; }
 
-    
-    [RelayCommand] Task Back() => this.IsFromGame 
-        ? navigator.PopToRoot() 
+    [RelayCommand]
+    void ToggleControls() => ControlsVisible = !ControlsVisible;
+
+    [RelayCommand] Task Back() => this.IsFromGame
+        ? navigator.PopToRoot()
         : navigator.GoBack();
     
     public async void OnAppearing()

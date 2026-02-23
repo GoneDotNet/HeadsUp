@@ -18,16 +18,18 @@
                               VerticalOptions="Fill" />
         
         <!-- Semi-transparent overlay for better readability -->
-        <BoxView BackgroundColor="Black" 
+        <BoxView BackgroundColor="Black"
                  Opacity="0.2"
+                 IsVisible="{Binding ControlsVisible}"
                  HorizontalOptions="Fill"
                  VerticalOptions="Fill" />
-        
+
         <!-- Scrollable Content Overlay -->
-        <ScrollView Padding="20" 
+        <ScrollView Padding="20"
+                    IsVisible="{Binding ControlsVisible}"
                     VerticalScrollBarVisibility="Never">
             <VerticalStackLayout Spacing="20">
-                
+
                 <!-- Header Section -->
                 <Border BackgroundColor="{StaticResource GamePurple}"
                         StrokeThickness="0"
@@ -246,5 +248,41 @@
                 <BoxView HeightRequest="40" IsVisible="False" />
             </VerticalStackLayout>
         </ScrollView>
+
+        <!-- Toggle Controls Button (always visible, rendered last for z-order) -->
+        <Border BackgroundColor="{StaticResource GamePurple}"
+                StrokeThickness="0"
+                Padding="10,6"
+                Opacity="0.85"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="0,50,20,0">
+            <Border.StrokeShape>
+                <RoundRectangle CornerRadius="15"/>
+            </Border.StrokeShape>
+            <Border.Shadow>
+                <Shadow Brush="Black" Offset="0,2" Radius="6" Opacity="0.4"/>
+            </Border.Shadow>
+            <Border.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ToggleControlsCommand}" />
+            </Border.GestureRecognizers>
+            <Label Text="{Binding ControlsVisible, StringFormat='{0}'}"
+                   FontSize="18"
+                   FontAttributes="Bold"
+                   TextColor="White">
+                <Label.Triggers>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding ControlsVisible}"
+                                 Value="True">
+                        <Setter Property="Text" Value="👁️ Hide" />
+                    </DataTrigger>
+                    <DataTrigger TargetType="Label"
+                                 Binding="{Binding ControlsVisible}"
+                                 Value="False">
+                        <Setter Property="Text" Value="👁️ Show" />
+                    </DataTrigger>
+                </Label.Triggers>
+            </Label>
+        </Border>
     </Grid>
 </ContentPage>
