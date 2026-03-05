@@ -49,20 +49,30 @@ public partial class GameViewModel(
 
     public void OnDisappearing()
     {
-        StopGame();
+        this.StopGame();
     }
 
     async Task StopGame()
     {
-        gameTimer.Stop();
-        gameTimer.Elapsed -= OnGameTimerElapsed;
+        if (!gameService.IsGameInProgress)
+            return;
         
-        this.gameTokenSource.Cancel(); // cancel the answer loop
-        videoRecorder.StopRecording();
-        foreach (var detector in answerDetectors)
-            await detector.Stop();
-        
-        gameService.EndGame();
+        try
+        {
+            gameTimer.Stop();
+            gameTimer.Elapsed -= this.OnGameTimerElapsed;
+
+            await gameService.EndGame();
+            foreach (var detector in answerDetectors)
+                await detector.Stop();
+            
+            this.gameTokenSource.Cancel(); // cancel the answer loop
+            videoRecorder.StopRecording();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to stop game");
+        }
     }
     
     

@@ -1,9 +1,12 @@
+using Shiny.SqliteDocumentDb;
+
 namespace GoneDotNet.HeadsUp.Services.Impl;
 
 
 [Singleton]
 public class GameService(
-    MySqliteConnection conn,
+    IDocumentStore store,
+    TimeProvider timeProvider,
     ILogger<GameService> logger
 ) : IGameService
 {
@@ -32,28 +35,24 @@ public class GameService(
     }
 
     
-    public void EndGame()
+    public async Task EndGame()
     {
         if (!this.IsGameInProgress)
             return;
 
         this.IsGameInProgress = false;
-        var sconn = conn.GetConnection();
-        sconn.BeginTransaction();
         
-        sconn.Insert(new Game
+        var game = new Game
         {
             Id = this.Id,
             Category = this.CurrentCategory,
-            CreatedAt = DateTimeOffset.UtcNow
-        });
+            CreatedAt = timeProvider.GetUtcNow()
+        };
         
         foreach (var answer in this.history)
         {
-            sconn.Insert(new GameAnswer
+            game.Answers.Add(new GameAnswer
             {
-                Id = Guid.NewGuid(),
-                GameId = this.Id,
                 Value = answer.Answer,
                 Timestamp = answer.Timestamp,
                 AnswerType = answer.AnswerType
@@ -61,15 +60,14 @@ public class GameService(
         }
 
         // add current answer as unanswered
-        sconn.Insert(new GameAnswer
+        game.Answers.Add(new GameAnswer
         {
-            Id = Guid.NewGuid(),
-            GameId = this.Id,
             Value = this.CurrentAnswer.DisplayValue,
-            Timestamp = DateTimeOffset.UtcNow,
+            Timestamp = timeProvider.GetUtcNow(),
             AnswerType = null
         });
-        sconn.Commit();
+        
+        await store.Insert(game);
     }
 
     
@@ -84,18 +82,15 @@ public class GameService(
 
     public async Task<GameResult> GetGameResult(Guid gameId)
     {
-        var game = await conn.GetAsync<Game>(gameId);
-        
-        var gameAnswers = await conn.Table<GameAnswer>()
-            .Where(ga => ga.GameId == gameId)
-            .OrderBy(ga => ga.Id)
-            .ToListAsync();
+        var game = await store.Get<Game>(gameId);
+        if (game == null)
+            throw new InvalidOperationException($"Game with id {gameId} not found");
         
         return new GameResult(
             game.Id,
             game.Category,
             game.CreatedAt,
-            gameAnswers
+            game.Answers
                 .OrderBy(x => x.Timestamp)
                 .Select(ga => (ga.Value, ga.AnswerType))
                 .ToList()
@@ -105,21 +100,17 @@ public class GameService(
     
     public async Task<List<GameResult>> GetGameResults()
     {
-        var games = await conn.Games
+        var games = await store.Query<Game>()
             .OrderByDescending(x => x.CreatedAt)
-            .ToListAsync();
-        
-        var gameAnswers = await conn.Table<GameAnswer>()
-            .OrderBy(ga => ga.Timestamp)
-            .ToListAsync();
+            .ToList();
         
         return games
             .Select(g => new GameResult(
                 g.Id,
                 g.Category,
                 g.CreatedAt,
-                gameAnswers
-                    .Where(ga => ga.GameId == g.Id)
+                g.Answers
+                    .OrderBy(a => a.Timestamp)
                     .Select(ga => (ga.Value, ga.AnswerType))
                     .ToList()
             ))
@@ -129,25 +120,24 @@ public class GameService(
 
     public async Task<List<string>> GetRecentAnswersByCategory(string categoryName)
     {
-        var answers = await conn.QueryAsync<GameAnswer>(
-            """
-            SELECT 
-                DISTINCT ga.Value
-            FROM 
-                GameAnswer ga
-            JOIN Game g ON ga.GameId = g.Id
-            WHERE g.Category = ?
-            ORDER BY ga.Timestamp DESC
-            LIMIT 10
-            """,
-            categoryName
-        );
+        var games = await store.Query<Game>()
+            .Where(g => g.Category == categoryName)
+            .OrderByDescending(g => g.CreatedAt)
+            .ToList();
+        
+        var answers = games
+            .SelectMany(g => g.Answers)
+            .OrderByDescending(a => a.Timestamp)
+            .Select(a => a.Value)
+            .Distinct()
+            .Take(10)
+            .ToList();
 
         logger.LogDebug(
             "GetRecentAnswersByCategory: {answersCount} for category '{categoryName}'",
             answers.Count,
             categoryName
         );
-        return answers.Select(x => x.Value).ToList();
+        return answers;
     }
 }

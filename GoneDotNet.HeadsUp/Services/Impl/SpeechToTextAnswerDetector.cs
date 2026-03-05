@@ -27,11 +27,11 @@ public class SpeechToTextAnswerDetector(
         try
         {
             Stt.RecognitionResultUpdated += SttOnRecognitionResultUpdated;
-            await Stt.StartListenAsync(new SpeechToTextOptions
+            await MainThread.InvokeOnMainThreadAsync(() => Stt.StartListenAsync(new SpeechToTextOptions
             {
                 Culture = new CultureInfo("en-US"),
                 ShouldReportPartialResults = true
-            });
+            }));
         }
         catch (Exception ex)
         {
@@ -40,7 +40,7 @@ public class SpeechToTextAnswerDetector(
     }
 
 
-    public async Task Stop()
+    public Task Stop()
     {
         Stt.RecognitionResultUpdated -= SttOnRecognitionResultUpdated;
         
@@ -50,9 +50,8 @@ public class SpeechToTextAnswerDetector(
             bufferTimer?.Dispose();
             bufferTimer = null;
             wordBuffer.Clear();
-        }
-        
-        await Stt.StopListenAsync();
+        } 
+        return MainThread.InvokeOnMainThreadAsync(() => Stt.StopListenAsync());
     }
 
 
@@ -74,7 +73,7 @@ public class SpeechToTextAnswerDetector(
         }
     }
 
-    private void ProcessBufferedUtterance(object? state)
+    void ProcessBufferedUtterance(object? state)
     {
         string utterance;
         
@@ -123,6 +122,7 @@ public class SpeechToTextAnswerDetector(
                     .CurrentAnswer?
                     .AlternateVersions?
                     .Any(x => x.Contains(text, StringComparison.InvariantCultureIgnoreCase)) ?? false;
+                
                 if (result)
                     return AnswerType.Success;
                 

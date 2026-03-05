@@ -66,6 +66,12 @@ public partial class GameCategoryViewModel(
     [RelayCommand]
     async Task NavToGame()
     {
+        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        {
+            await navigator.Alert("No Connection", "An internet connection is required to play. Please check your connection and try again.");
+            return;
+        }
+        
         var confirm = await navigator.Confirm(
             "Start Game", 
             $"Start a new game in the {Name} category?"

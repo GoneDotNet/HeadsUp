@@ -12,11 +12,11 @@ namespace GoneDotNet.HeadsUp.Services;
 [Singleton(Type = typeof(IVideoRecorder))]
 public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(logger)
 {
-    CameraDevice? _cameraDevice;
-    CameraCaptureSession? _captureSession;
-    MediaRecorder? _mediaRecorder;
-    CameraManager? _cameraManager;
-    string? _cameraId;
+    CameraDevice? cameraDevice;
+    CameraCaptureSession? captureSession;
+    MediaRecorder? mediaRecorder;
+    CameraManager? cameraManager;
+    string? cameraId;
 
     // Android supports video recording
     public override bool IsSupported => true;
@@ -30,56 +30,66 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
             if (!await CheckPermissionsAsync())
                 throw new UnauthorizedAccessException("Camera and audio recording permissions are required");
 
-            _cameraManager = (CameraManager)Platform.CurrentActivity?.GetSystemService(Context.CameraService)!;
+            this.cameraManager = (CameraManager)Platform.CurrentActivity?.GetSystemService(Context.CameraService)!;
             
             // Find the appropriate camera
-            _cameraId = this.GetCameraId(useFrontCamera);
-            if (string.IsNullOrEmpty(_cameraId))
+            this.cameraId = this.GetCameraId(useFrontCamera);
+            if (string.IsNullOrEmpty(this.cameraId))
                 throw new InvalidOperationException($"No {(useFrontCamera ? "front" : "back")} camera found");
 
-            // Setup MediaRecorder
-            _mediaRecorder = new MediaRecorder();
-            
-            _mediaRecorder.SetVideoSource(VideoSource.Surface);
-            _mediaRecorder.SetOutputFormat(OutputFormat.Mpeg4);
-            _mediaRecorder.SetOutputFile(outputPath);
-            _mediaRecorder.SetVideoEncoder(VideoEncoder.H264);
-            
-            _mediaRecorder.SetVideoSize(1920, 1080);
-            _mediaRecorder.SetVideoFrameRate(30);
-            _mediaRecorder.SetVideoEncodingBitRate(10000000);
-            _mediaRecorder.Prepare();
+            // Setup MediaRecorder - order matters: sources, output format, encoders, then prepare
+            // Use Context constructor (API 31+) as parameterless constructor is deprecated
+            if (OperatingSystem.IsAndroidVersionAtLeast(31))
+            {
+                this.mediaRecorder = new MediaRecorder(Platform.CurrentActivity!);
+            }
+            else
+            {
+#pragma warning disable CA1422 // Validate platform compatibility
+                this.mediaRecorder = new MediaRecorder();
+#pragma warning restore CA1422
+            }
 
             if (captureAudio)
-            {
-                _mediaRecorder.SetAudioSource(AudioSource.Mic);
-                _mediaRecorder.SetAudioEncoder(AudioEncoder.Aac);
-            }
+                this.mediaRecorder.SetAudioSource(AudioSource.Mic);
+            
+            this.mediaRecorder.SetVideoSource(VideoSource.Surface);
+            this.mediaRecorder.SetOutputFormat(OutputFormat.Mpeg4);
+            this.mediaRecorder.SetOutputFile(outputPath);
+            this.mediaRecorder.SetVideoEncoder(VideoEncoder.H264);
+
+            if (captureAudio)
+                this.mediaRecorder.SetAudioEncoder(AudioEncoder.Aac);
+            
+            this.mediaRecorder.SetVideoSize(1920, 1080);
+            this.mediaRecorder.SetVideoFrameRate(30);
+            this.mediaRecorder.SetVideoEncodingBitRate(10000000);
+            this.mediaRecorder.Prepare();
 
             // Open camera
             var cameraStateCallback = new CameraStateCallback(this);
-            _cameraManager.OpenCamera(_cameraId, cameraStateCallback, null);
+            this.cameraManager.OpenCamera(this.cameraId, cameraStateCallback, null);
 
             // Wait for camera to open (simplified - in production you'd want proper async handling)
             await Task.Delay(1000);
 
-            if (_cameraDevice == null)
+            if (this.cameraDevice == null)
                 throw new InvalidOperationException("Failed to open camera");
 
             // Create capture session
             var surfaces = new List<Surface>();
-            if (_mediaRecorder.Surface != null)
-                surfaces.Add(_mediaRecorder.Surface);
+            if (this.mediaRecorder.Surface != null)
+                surfaces.Add(this.mediaRecorder.Surface);
 
             var captureStateCallback = new CaptureStateCallback(this);
             // this._cameraDevice.CreateCaptureSession(new SessionConfiguration());
-            _cameraDevice.CreateCaptureSession(surfaces, captureStateCallback, null);
+            this.cameraDevice.CreateCaptureSession(surfaces, captureStateCallback, null);
             
             // Wait for session to be ready
             await Task.Delay(500);
 
             // Start recording
-            _mediaRecorder.Start();
+            this.mediaRecorder.Start();
         }
         catch
         {
@@ -92,7 +102,7 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     {
         try
         {
-            _mediaRecorder?.Stop();
+            this.mediaRecorder?.Stop();
             this.Cleanup();
             return CurrentOutputPath;
         }
@@ -136,13 +146,13 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
 
     string? GetCameraId(bool useFrontCamera)
     {
-        if (_cameraManager == null) return null;
+        if (this.cameraManager == null) return null;
 
-        var cameraIds = _cameraManager.GetCameraIdList();
+        var cameraIds = this.cameraManager.GetCameraIdList();
         
         foreach (var id in cameraIds)
         {
-            var characteristics = _cameraManager.GetCameraCharacteristics(id);
+            var characteristics = this.cameraManager.GetCameraCharacteristics(id);
             var facing = (int)characteristics.Get(CameraCharacteristics.LensFacing)!;
             
             if (useFrontCamera && facing == (int)LensFacing.Front)
@@ -158,21 +168,17 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     
     void Cleanup()
     {
-        try
-        {
-            _captureSession?.Close();
-            _captureSession = null;
+        try { this.captureSession?.Close(); }
+        catch (Exception ex) { this.OnError(ex); }
+        finally { this.captureSession = null; }
 
-            _cameraDevice?.Close();
-            _cameraDevice = null;
+        try { this.cameraDevice?.Close(); }
+        catch (Exception ex) { this.OnError(ex); }
+        finally { this.cameraDevice = null; }
 
-            _mediaRecorder?.Release();
-            _mediaRecorder = null;
-        }
-        catch (Exception ex)
-        {
-            this.OnError(ex);
-        }
+        try { this.mediaRecorder?.Release(); }
+        catch (Exception ex) { this.OnError(ex); }
+        finally { this.mediaRecorder = null; }
     }
 
     
@@ -180,20 +186,20 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     {
         public override void OnOpened(CameraDevice camera)
         {
-            service._cameraDevice = camera;
+            service.cameraDevice = camera;
         }
 
         public override void OnDisconnected(CameraDevice camera)
         {
             camera.Close();
-            service._cameraDevice = null;
+            service.cameraDevice = null;
         }
 
         public override void OnError(CameraDevice camera, CameraError error)
         {
             camera.Close();
             
-            service._cameraDevice = null;
+            service.cameraDevice = null;
             service.OnError(new InvalidOperationException($"Camera Error: {error}"));
         }
     }
@@ -202,7 +208,7 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     {
         public override void OnConfigured(CameraCaptureSession session)
         {
-            service._captureSession = session;
+            service.captureSession = session;
         }
 
         public override void OnConfigureFailed(CameraCaptureSession session)

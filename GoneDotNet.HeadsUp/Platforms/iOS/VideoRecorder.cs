@@ -8,12 +8,12 @@ namespace GoneDotNet.HeadsUp.Services;
 [Singleton(Type = typeof(IVideoRecorder))]
 public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(logger)
 {
-    AVCaptureSession? _captureSession;
-    AVCaptureMovieFileOutput? _movieOutput;
-    AVCaptureDevice? _videoDevice;
-    AVCaptureDeviceInput? _videoInput;
-    AVCaptureDeviceInput? _audioInput;
-    NSUrl? _outputFileUrl;
+    AVCaptureSession? captureSession;
+    AVCaptureMovieFileOutput? movieOutput;
+    AVCaptureDevice? videoDevice;
+    AVCaptureDeviceInput? videoInput;
+    AVCaptureDeviceInput? audioInput;
+    NSUrl? outputFileUrl;
 
 
     public override bool IsSupported => UIDevice.CurrentDevice.CheckSystemVersion(10, 0); // iOS 10.0+
@@ -30,24 +30,24 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
                 throw new UnauthorizedAccessException("Camera and microphone permissions are required");
 
             // Setup capture session
-            _captureSession = new AVCaptureSession();
-            _captureSession.SessionPreset = AVCaptureSession.Preset1920x1080;
+            this.captureSession = new AVCaptureSession();
+            this.captureSession.SessionPreset = AVCaptureSession.Preset1920x1080;
 
             // Setup video input
             var devicePosition = useFrontCamera ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;
-            _videoDevice = GetCameraDevice(devicePosition);
+            this.videoDevice = GetCameraDevice(devicePosition);
 
-            if (_videoDevice == null)
+            if (this.videoDevice == null)
                 throw new InvalidOperationException($"No {(useFrontCamera ? "front" : "back")} camera found");
 
-            _videoInput = new AVCaptureDeviceInput(_videoDevice, out var videoError);
+            this.videoInput = new AVCaptureDeviceInput(this.videoDevice, out var videoError);
             if (videoError != null)
                 throw new InvalidOperationException($"Failed to create video input: {videoError.LocalizedDescription}");
 
-            if (!_captureSession.CanAddInput(_videoInput))
+            if (!this.captureSession.CanAddInput(this.videoInput))
                 throw new InvalidOperationException("Cannot add video input to capture session");
 
-            _captureSession.AddInput(_videoInput);
+            this.captureSession.AddInput(this.videoInput);
 
             // Setup audio input
             if (captureAudio)
@@ -55,30 +55,31 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
                 var audioDevice = AVCaptureDevice.GetDefaultDevice(AVMediaTypes.Audio);
                 if (audioDevice != null)
                 {
-                    _audioInput = new AVCaptureDeviceInput(audioDevice, out var audioError);
-                    if (audioError == null && _captureSession.CanAddInput(_audioInput))
-                        _captureSession.AddInput(_audioInput);
+                    this.audioInput = new AVCaptureDeviceInput(audioDevice, out var audioError);
+                    if (audioError == null && this.captureSession.CanAddInput(this.audioInput))
+                        this.captureSession.AddInput(this.audioInput);
                 }
             }
 
             // Setup movie file output
-            _movieOutput = new AVCaptureMovieFileOutput();
-            if (!_captureSession.CanAddOutput(_movieOutput))
+            this.movieOutput = new AVCaptureMovieFileOutput();
+            if (!this.captureSession.CanAddOutput(this.movieOutput))
                 throw new InvalidOperationException("Cannot add movie output to capture session");
             
-            _captureSession.AddOutput(_movieOutput);
+            this.captureSession.AddOutput(this.movieOutput);
 
-            _outputFileUrl = NSUrl.FromFilename(outputPath);
-            _captureSession.StartRunning();
+            this.outputFileUrl = NSUrl.FromFilename(outputPath);
+            this.captureSession.StartRunning();
 
             // Start recording
             var recordingDelegate = new MovieFileOutputRecordingDelegate(this);
-            _movieOutput.StartRecordingToOutputFile(_outputFileUrl, recordingDelegate);
+            this.movieOutput.StartRecordingToOutputFile(this.outputFileUrl, recordingDelegate);
 
             return true;
         }
         catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to start video recorder");
             this.Cleanup();
             return false;
         }
@@ -88,14 +89,14 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     {
         try
         {
-            _movieOutput?.StopRecording();
+            this.movieOutput?.StopRecording();
             this.Cleanup();
-            return _outputFileUrl?.Path;
+            return this.outputFileUrl?.Path;
         }
-        catch
+        catch (Exception ex)
         {
+            logger.LogError(ex, "Failed to stop video recorder");
             this.Cleanup();
-            throw;
         }
     }
 
@@ -124,34 +125,34 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
     {
         try
         {
-            _captureSession?.StopRunning();
+            this.captureSession?.StopRunning();
 
-            if (_videoInput != null)
+            if (this.videoInput != null)
             {
-                _captureSession?.RemoveInput(_videoInput);
-                _videoInput?.Dispose();
-                _videoInput = null;
+                this.captureSession?.RemoveInput(this.videoInput);
+                this.videoInput?.Dispose();
+                this.videoInput = null;
             }
 
-            if (_audioInput != null)
+            if (this.audioInput != null)
             {
-                _captureSession?.RemoveInput(_audioInput);
-                _audioInput?.Dispose();
-                _audioInput = null;
+                this.captureSession?.RemoveInput(this.audioInput);
+                this.audioInput?.Dispose();
+                this.audioInput = null;
             }
 
-            if (_movieOutput != null)
+            if (this.movieOutput != null)
             {
-                _captureSession?.RemoveOutput(_movieOutput);
-                _movieOutput?.Dispose();
-                _movieOutput = null;
+                this.captureSession?.RemoveOutput(this.movieOutput);
+                this.movieOutput?.Dispose();
+                this.movieOutput = null;
             }
 
-            _captureSession?.Dispose();
-            _captureSession = null;
+            this.captureSession?.Dispose();
+            this.captureSession = null;
 
-            _videoDevice?.Dispose();
-            _videoDevice = null;
+            this.videoDevice?.Dispose();
+            this.videoDevice = null;
         }
         catch (Exception ex)
         {

@@ -71,7 +71,7 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
         return Task.CompletedTask;
     }
     
-    private void UpdateDeviceOrientation()
+    void UpdateDeviceOrientation()
     {
         try
         {
@@ -86,7 +86,7 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
         }
     }
     
-    private void OnAccelerometerReadingChanged(object? sender, AccelerometerChangedEventArgs e)
+    void OnAccelerometerReadingChanged(object? sender, AccelerometerChangedEventArgs e)
     {
         try
         {
@@ -140,7 +140,7 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
         }
     }
     
-    private AnswerType DetermineFlipType(double angleDifference)
+    AnswerType DetermineFlipType(double angleDifference)
     {
         // Determine flip type based on device orientation
         return currentOrientation switch
@@ -151,7 +151,7 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
         };
     }
     
-    private void EstablishBaseline(Vector3 acceleration)
+    void EstablishBaseline(Vector3 acceleration)
     {
         // Only establish baseline when device is relatively stable
         var magnitude = Math.Sqrt(acceleration.X * acceleration.X + 
@@ -168,7 +168,7 @@ public class SensorAnswerDetector(ILogger<SensorAnswerDetector> logger) : IAnswe
         }
     }
     
-    private double CalculateFlipAngle(Vector3 acceleration)
+    double CalculateFlipAngle(Vector3 acceleration)
     {
         // Calculate the appropriate flip angle based on device orientation
         // This determines which axis represents the "flip" motion

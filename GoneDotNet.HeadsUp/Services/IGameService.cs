@@ -10,7 +10,7 @@ public interface IGameService
     int AnswerNumber { get; }
     
     void StartGame(string category, ProvidedAnswer[] answers);
-    void EndGame();
+    Task EndGame();
     
     void MarkAnswer(AnswerType answerType);
 
