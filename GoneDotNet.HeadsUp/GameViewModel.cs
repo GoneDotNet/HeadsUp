@@ -12,8 +12,7 @@ public partial class GameViewModel(
     IEnumerable<IAnswerDetector> answerDetectors
 ) : ObservableObject, IPageLifecycleAware
 {
-    readonly System.Timers.Timer gameTimer = new();
-    readonly CancellationTokenSource gameTokenSource = new();
+    readonly GameEngine engine = new(beeper, gameService);
     
     [ObservableProperty] string answerText = "";
     [ObservableProperty] int countdown = 60;
@@ -26,7 +25,6 @@ public partial class GameViewModel(
     
     public async void OnAppearing()
     {
-        beeper.SetThemeVolume(0.5f);
         foreach (var detector in answerDetectors)
             await detector.Start();
         
@@ -39,12 +37,14 @@ public partial class GameViewModel(
         {
             logger.LogWarning(ex, "Failed to start video recording");
         }
-        
-        _ = this.DoAnswer(this.gameTokenSource.Token);
 
-        gameTimer.Interval = 1000;
-        gameTimer.Elapsed += OnGameTimerElapsed;
-        gameTimer.Start();
+        // wire detectors to engine
+        foreach (var detector in answerDetectors)
+            detector.AnswerDetected += OnDetectorAnswerDetected;
+
+        engine.StateChanged += OnEngineStateChanged;
+        engine.GameOver += OnEngineGameOver;
+        engine.Start();
     }
 
     public void OnDisappearing()
@@ -59,14 +59,16 @@ public partial class GameViewModel(
         
         try
         {
-            gameTimer.Stop();
-            gameTimer.Elapsed -= this.OnGameTimerElapsed;
+            engine.StateChanged -= OnEngineStateChanged;
+            engine.GameOver -= OnEngineGameOver;
+            await engine.Stop();
 
-            await gameService.EndGame();
             foreach (var detector in answerDetectors)
+            {
+                detector.AnswerDetected -= OnDetectorAnswerDetected;
                 await detector.Stop();
+            }
             
-            this.gameTokenSource.Cancel(); // cancel the answer loop
             videoRecorder.StopRecording();
         }
         catch (Exception ex)
@@ -74,63 +76,20 @@ public partial class GameViewModel(
             logger.LogError(ex, "Failed to stop game");
         }
     }
-    
-    
-    async void OnGameTimerElapsed(object? sender, System.Timers.ElapsedEventArgs e)
+
+    void OnDetectorAnswerDetected(object? sender, AnswerType answerType)
+        => engine.SubmitAnswer(answerType);
+
+    void OnEngineStateChanged(object? sender, GameEngineStateEventArgs e)
     {
-        this.Countdown--;
-
-        if (this.Countdown <= 0)
-        {
-            // beeper.GameOver();
-            await this.StopGame();
-            SetState(ScreenState.GameOver);
-            await Task.Delay(2000);
-
-            await navigator.NavigateToScore(gameService.Id, true);
-        }        
-        else if (this.Countdown <= 10)
-        {
-            beeper.Countdown();
-        }
-    }
-    
-
-    async Task DoAnswer(CancellationToken cancellationToken)
-    {
-        while (!cancellationToken.IsCancellationRequested)
-        {
-            SetState(ScreenState.InAnswer);
-            this.AnswerText = gameService.CurrentAnswer.DisplayValue;
-            
-            var answerType = await this.WaitForAnswer(cancellationToken);
-            gameService.MarkAnswer(answerType);
-
-            var state = answerType == AnswerType.Pass ? ScreenState.Pass : ScreenState.Success;
-            SetState(state);
-            await Task.Delay(2000, cancellationToken);
-        }
+        this.AnswerText = e.AnswerText;
+        this.Countdown = e.Countdown;
+        SetState(e.State);
     }
 
-
-    async Task<AnswerType> WaitForAnswer(CancellationToken cancellationToken)
+    async void OnEngineGameOver(object? sender, EventArgs e)
     {
-        var tcs = new TaskCompletionSource<AnswerType>();
-        var handler = new EventHandler<AnswerType>((_, args) => tcs.TrySetResult(args));
-
-        try
-        {
-            foreach (var detector in answerDetectors)
-                detector.AnswerDetected += handler;
-            
-            await using var registration = cancellationToken.Register(() => tcs.TrySetCanceled());
-            return await tcs.Task;
-        }
-        finally
-        {
-            foreach (var detector in answerDetectors)
-                detector.AnswerDetected -= handler;
-        }
+        await navigator.NavigateToScore(gameService.Id, true);
     }
 
     void SetState(ScreenState state)
@@ -145,13 +104,11 @@ public partial class GameViewModel(
             case ScreenState.Success:
                 StateColor = Colors.Green;
                 StateText = "Success!";
-                beeper.Success();
                 break;
             
             case ScreenState.Pass:
                 StateColor = Colors.Orange;
                 StateText = "Pass";
-                beeper.Pass();
                 break;
             
             case ScreenState.GameOver:
@@ -160,12 +117,4 @@ public partial class GameViewModel(
                 break;
         }
     }
-}
-
-public enum ScreenState
-{
-    Success,
-    Pass,
-    InAnswer,
-    GameOver
 }
