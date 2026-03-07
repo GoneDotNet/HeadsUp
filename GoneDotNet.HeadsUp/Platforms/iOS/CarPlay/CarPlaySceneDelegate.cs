@@ -91,7 +91,8 @@ public class CarPlaySceneDelegate : CPTemplateApplicationSceneDelegate
     {
         if (interfaceController == null) return;
 
-        var action = new CPAlertAction("OK", CPAlertActionStyle.Default, _ => onDismiss?.Invoke());
+        var action = new CPAlertAction("OK", CPAlertActionStyle.Default, _ =>
+            interfaceController?.DismissTemplate(true, (_, _) => onDismiss?.Invoke()));
         var alert = new CPAlertTemplate(new[] { title, message }, new[] { action });
         interfaceController.PresentTemplate(alert, true, null);
     }
@@ -100,8 +101,10 @@ public class CarPlaySceneDelegate : CPTemplateApplicationSceneDelegate
     {
         if (interfaceController == null) return;
 
-        var yesAction = new CPAlertAction("Yes", CPAlertActionStyle.Default, _ => callback(true));
-        var noAction = new CPAlertAction("No", CPAlertActionStyle.Cancel, _ => callback(false));
+        var yesAction = new CPAlertAction("Yes", CPAlertActionStyle.Default, _ =>
+            interfaceController?.DismissTemplate(true, (_, _) => callback(true)));
+        var noAction = new CPAlertAction("No", CPAlertActionStyle.Cancel, _ =>
+            interfaceController?.DismissTemplate(true, (_, _) => callback(false)));
         var alert = new CPAlertTemplate(new[] { title, message }, new[] { yesAction, noAction });
         interfaceController.PresentTemplate(alert, true, null);
     }
