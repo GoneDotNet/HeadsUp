@@ -1,11 +1,9 @@
 using CarPlay;
 using Foundation;
-using GoneDotNet.HeadsUp.Services;
-using UIKit;
 
 namespace GoneDotNet.HeadsUp;
 
-[Register("GoneDotNet_HeadsUp_CarPlaySceneDelegate")]
+[Register("CarPlaySceneDelegate")]
 public class CarPlaySceneDelegate : CPTemplateApplicationSceneDelegate
 {
     CPInterfaceController? interfaceController;

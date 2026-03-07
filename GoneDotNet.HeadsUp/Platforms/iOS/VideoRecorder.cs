@@ -97,6 +97,7 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
         {
             logger.LogError(ex, "Failed to stop video recorder");
             this.Cleanup();
+            throw;
         }
     }
 
