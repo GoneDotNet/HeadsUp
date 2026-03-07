@@ -18,8 +18,6 @@ public class AppDelegate : MauiUIApplicationDelegate
             config.DelegateType = typeof(CarPlaySceneDelegate);
             return config;
         }
-        var defaultConfig = base.GetConfiguration(application, connectingSceneSession, options);
-        defaultConfig.DelegateType = typeof(CarPlaySceneDelegate);
-        return defaultConfig;
+        return base.GetConfiguration(application, connectingSceneSession, options);
     }
 }

@@ -34,6 +34,7 @@
 	<string>Say something useful here that your users will understand</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Say something useful here that your users will understand</string>
+	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
