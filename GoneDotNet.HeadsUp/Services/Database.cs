@@ -20,6 +20,8 @@ public static class Database
 
 [JsonSerializable(typeof(Game))]
 [JsonSerializable(typeof(GameCategory))]
+[JsonSerializable(typeof(List<GameCategory>))]
+[JsonSerializable(typeof(List<ProvidedAnswer>))]
 internal partial class AppJsonContext : JsonSerializerContext;
 
 public class Game
@@ -42,4 +44,5 @@ public class GameCategory
     public int Id { get; set; }
     public string Value { get; set; }
     public string Description { get; set; }
+    public List<ProvidedAnswer> Answers { get; set; } = new();
 }

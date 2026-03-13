@@ -7,6 +7,7 @@ public partial class ReadyViewModel(
     IDialogs dialogs,
     IGameService gameService,
     IAnswerProvider answerProvider,
+    ICategoryRespository categoryRepository,
     IBeepService beeper,
     ILogger<ReadyViewModel> logger
 ) : ObservableObject, IPageLifecycleAware
@@ -19,10 +20,34 @@ public partial class ReadyViewModel(
     {
         try
         {
-            var questions =
-                await answerProvider.GenerateAnswers(this.Category, Constants.MaxAnswersPerGame,
-                    CancellationToken.None);
-            gameService.StartGame(this.Category, questions);
+            var cat = await categoryRepository.GetByName(this.Category);
+            ProvidedAnswer[] answers;
+
+            if (cat != null && cat.Answers.Count > 0)
+            {
+                // use stored answers in random order
+                answers = cat.Answers
+                    .OrderBy(_ => Random.Shared.Next())
+                    .Take(Constants.MaxAnswersPerGame)
+                    .ToArray();
+            }
+            else
+            {
+                // fallback for legacy/seed categories without stored answers - generate and save
+                answers = await answerProvider.GenerateAnswers(
+                    this.Category,
+                    Constants.MaxAnswersPerCategory,
+                    CancellationToken.None
+                );
+                await categoryRepository.SaveAnswers(this.Category, answers.ToList());
+
+                answers = answers
+                    .OrderBy(_ => Random.Shared.Next())
+                    .Take(Constants.MaxAnswersPerGame)
+                    .ToArray();
+            }
+
+            gameService.StartGame(this.Category, answers);
 
             beeper.SetThemeVolume(0.5f);
             var count = 5;

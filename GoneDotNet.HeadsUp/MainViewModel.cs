@@ -5,14 +5,20 @@ public partial class MainViewModel(
     INavigator navigator,
     IDialogs dialogs,
     ICategoryRespository repository,
-    IConnectivity connectivity,
-    IBeepService beeper
+    IVersionTracking versionTracking,
+    IBeepService beeper,
+    ILogger<MainViewModel> logger
 ) : ObservableObject, IPageLifecycleAware
 {
     [RelayCommand] Task NavToScoreList() => navigator.NavigateToScoreList();
     [RelayCommand] Task NavToManageCategories() => navigator.NavigateToCategoryList();
     [ObservableProperty] GameCategoryViewModel[] categories;
     [ObservableProperty] string themeSongIcon = GetThemeSongIcon();
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsNotSeeding))]
+    bool isSeeding;
+
+    public bool IsNotSeeding => !this.IsSeeding;
 
     [RelayCommand]
     void ToggleThemeSong()
@@ -45,14 +51,50 @@ public partial class MainViewModel(
             beeper.SetThemeVolume(1.0f);
         }
 
+        if (versionTracking.IsFirstLaunchEver)
+        {
+            var seed = await dialogs.Confirm(
+                "Welcome!",
+                "Would you like to create some default categories to get started?"
+            );
+            if (seed)
+                await SeedDefaultCategories();
+        }
+
+        await LoadCategories();
+    }
+
+    [RelayCommand]
+    async Task SeedDefaults()
+    {
+        await SeedDefaultCategories();
+        await LoadCategories();
+    }
+
+    async Task SeedDefaultCategories()
+    {
+        this.IsSeeding = true;
+        try
+        {
+            await repository.SeedDefaults();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to seed default categories");
+        }
+        this.IsSeeding = false;
+    }
+
+    async Task LoadCategories()
+    {
         var cats = await repository.GetAll();
         this.Categories = cats
             .Select(x => new GameCategoryViewModel(
                 navigator, 
                 dialogs, 
-                connectivity,
                 x.Name, 
-                x.Description
+                x.Description,
+                x.Answers.Count > 0
             ))
             .ToArray();
     }
@@ -65,9 +107,9 @@ public partial class MainViewModel(
 public partial class GameCategoryViewModel(
     INavigator navigator,
     IDialogs dialogs,
-    IConnectivity connectivity,
     string name, 
-    string description
+    string description,
+    bool hasAnswers
 ) : ObservableObject
 {
     public string Name => name;
@@ -76,12 +118,6 @@ public partial class GameCategoryViewModel(
     [RelayCommand]
     async Task NavToGame()
     {
-        if (connectivity.NetworkAccess != NetworkAccess.Internet)
-        {
-            await dialogs.Alert("No Connection", "An internet connection is required to play. Please check your connection and try again.");
-            return;
-        }
-        
         var confirm = await dialogs.Confirm(
             "Start Game", 
             $"Start a new game in the {Name} category?"
