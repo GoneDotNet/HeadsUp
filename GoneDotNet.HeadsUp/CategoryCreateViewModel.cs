@@ -4,6 +4,7 @@ namespace GoneDotNet.HeadsUp;
 [ShellMap<CategoryCreatePage>]
 public partial class CategoryCreateViewModel(
     INavigator navigator,
+    IDialogs dialogs,
     ICategoryRespository repo
 ) : ObservableObject
 {
@@ -14,17 +15,17 @@ public partial class CategoryCreateViewModel(
     [ObservableProperty] string description;
 
     
-    [RelayCommand(CanExecute = nameof(this.CanAdd))]
+    [RelayCommand(CanExecute = nameof(CanAdd))]
     async Task Add()
     {
         var created = await repo.Create(this.Name, this.Description);
         if (!created)
         {
-            await navigator.Alert("Error", "Could not create category, it may already exist.");
+            await dialogs.Alert("Error", "Could not create category, it may already exist.");
         }
         else
         {
-            await navigator.Alert(
+            await dialogs.Alert(
                 "Created", 
                 $"Category '{this.Name}' created"
             );

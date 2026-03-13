@@ -4,6 +4,7 @@ namespace GoneDotNet.HeadsUp;
 [ShellMap<CategoryListPage>]
 public partial class CategoryListViewModel(
     INavigator navigator,
+    IDialogs dialogs,
     ICategoryRespository repository
 ) : ObservableObject, IPageLifecycleAware
 {
@@ -17,7 +18,7 @@ public partial class CategoryListViewModel(
         var items = await repository.GetAll();
         this.Categories = items
             .Select(x => new CategoryItemViewModel(
-                navigator, 
+                dialogs, 
                 x,
                 async () =>
                 {
@@ -41,7 +42,7 @@ public partial class CategoryListViewModel(
 }
 
 public partial class CategoryItemViewModel(
-    INavigator navigator, 
+    IDialogs dialogs,
     GameCategory category,
     Func<Task> callback
 ) : ObservableObject
@@ -52,14 +53,14 @@ public partial class CategoryItemViewModel(
     [RelayCommand]
     async Task Delete()
     {
-        var confirm = await navigator.Confirm(
+        var confirm = await dialogs.Confirm(
             "Delete Category", 
             $"Are you sure you want to delete the category '{Name}'?"
         );
         if (confirm)
         {
             await callback.Invoke();
-            await navigator.Alert("Done", $"Category '{Name}' deleted.");
+            await dialogs.Alert("Done", $"Category '{Name}' deleted.");
         }
     }
 }

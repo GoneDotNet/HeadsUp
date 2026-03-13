@@ -4,6 +4,7 @@ namespace GoneDotNet.HeadsUp;
 [ShellMap<ReadyPage>]
 public partial class ReadyViewModel(
     INavigator navigator, 
+    IDialogs dialogs,
     IGameService gameService,
     IAnswerProvider answerProvider,
     IBeepService beeper,
@@ -38,7 +39,7 @@ public partial class ReadyViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "Error starting game");
-            await navigator.Alert("Error", $"An error occurred while starting the game.  Make sure you are connected to the internet");
+            await dialogs.Alert("Error", $"An error occurred while starting the game.  Make sure you are connected to the internet");
             await navigator.GoBack();
         }
     }

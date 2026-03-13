@@ -3,7 +3,9 @@
 [ShellMap<MainPage>(registerRoute: false)]
 public partial class MainViewModel(
     INavigator navigator,
+    IDialogs dialogs,
     ICategoryRespository repository,
+    IConnectivity connectivity,
     IBeepService beeper
 ) : ObservableObject, IPageLifecycleAware
 {
@@ -45,7 +47,13 @@ public partial class MainViewModel(
 
         var cats = await repository.GetAll();
         this.Categories = cats
-            .Select(x => new GameCategoryViewModel(navigator, x.Name, x.Description))
+            .Select(x => new GameCategoryViewModel(
+                navigator, 
+                dialogs, 
+                connectivity,
+                x.Name, 
+                x.Description
+            ))
             .ToArray();
     }
 
@@ -55,7 +63,9 @@ public partial class MainViewModel(
 }
 
 public partial class GameCategoryViewModel(
-    INavigator navigator, 
+    INavigator navigator,
+    IDialogs dialogs,
+    IConnectivity connectivity,
     string name, 
     string description
 ) : ObservableObject
@@ -66,13 +76,13 @@ public partial class GameCategoryViewModel(
     [RelayCommand]
     async Task NavToGame()
     {
-        if (Connectivity.Current.NetworkAccess != NetworkAccess.Internet)
+        if (connectivity.NetworkAccess != NetworkAccess.Internet)
         {
-            await navigator.Alert("No Connection", "An internet connection is required to play. Please check your connection and try again.");
+            await dialogs.Alert("No Connection", "An internet connection is required to play. Please check your connection and try again.");
             return;
         }
         
-        var confirm = await navigator.Confirm(
+        var confirm = await dialogs.Confirm(
             "Start Game", 
             $"Start a new game in the {Name} category?"
         );
