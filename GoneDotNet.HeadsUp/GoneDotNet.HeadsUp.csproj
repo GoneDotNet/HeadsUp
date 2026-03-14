@@ -9,6 +9,8 @@
         <Nullable>enable</Nullable>
         <UseMaui>true</UseMaui>
         <LangVersion>preview</LangVersion>
+        <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
+        
         <ApplicationTitle>GDN Heads Up</ApplicationTitle>
         <ApplicationId>org.gonedotnet.headsup</ApplicationId>
         <ApplicationIdGuid>EEFF5C54-3BE5-4547-91A3-120BD1324376</ApplicationIdGuid>
@@ -44,6 +46,10 @@
         <MauiFont Include="Resources\Fonts\*"/>
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
         <EmbeddedResource Include="Assets\*.mp3"/>
+
+        <MauiAsset Include="appsettings.json" LogicalName="appsettings.json"/>
+        <Content Remove="**\appsettings.json"/>
+        <Content Remove="**\appsettings.*.json"/>
         
         <CustomEntitlements Include="com.apple.developer.carplay-driving-task"
                             Type="Boolean"
@@ -63,6 +69,7 @@
         <PackageReference Include="Plugin.Maui.Audio" Version="4.0.0"/>
         <PackageReference Include="Shiny.Maui.Shell" Version="3.1.0"/>
         <PackageReference Include="Shiny.Extensions.MauiHosting" Version="2.0.0"/>
+        <PackageReference Include="Shiny.Extensions.Configuration" Version="4.0.0-beta-0095"/>
         <PackageReference Include="Shiny.SqliteDocumentDb" Version="1.0.0"/>
     </ItemGroup>
 
