@@ -23,7 +23,7 @@ env:
   DOTNET_VERSION: '10.0.102'
   APP_PROJECT: './GoneDotNet.HeadsUp/GoneDotNet.HeadsUp.csproj'
   APP_VERSION: '1.0'
-  APPSETTINGS_JSON_FILE: './src/GoneDotNet.HeadsUp/appsettings.json'
+  APPSETTINGS_JSON_FILE: './GoneDotNet.HeadsUp/appsettings.json'
   PACKAGE_NAME: 'org.gonedotnet.headsup'
     
 jobs:
