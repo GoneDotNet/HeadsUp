@@ -92,7 +92,6 @@ jobs:
           -p:RuntimeIdentifier=ios-arm64 \
           -p:ArchiveOnBuild=true \
           -p:CodesignProvision='Automatic:AppStore' \
-          -p:CodesignKey='${{ secrets.APP_STORE_CODESIGN_KEY }}' \
           -o ${{ github.workspace }}/artifacts/ \
           -p:IpaPackageName=app.ipa \
           -bl:${{ github.workspace}}/artifacts/ios.binlog \
