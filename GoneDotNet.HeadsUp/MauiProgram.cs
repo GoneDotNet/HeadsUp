@@ -1,4 +1,5 @@
 ﻿using System.ClientModel;
+using Azure;
 using Azure.AI.OpenAI;
 using GoneDotNet.HeadsUp.Services.Impl;
 using Microsoft.Extensions.AI;
@@ -32,21 +33,13 @@ public static class MauiProgram
         builder.Logging.AddDebug();
         builder.Logging.AddFilter("GoneDotNet.HeadsUp.Services.Impl.SensorAnswerDetector", LogLevel.Warning);
 #endif
-        var openAiApiKey = builder.Configuration["AzureOpenAiApiKey"];
-        var openAiEndpoint = builder.Configuration["AzureOpenAiEndpoint"];
-        
-        if (String.IsNullOrWhiteSpace(openAiApiKey) ||
-            !openAiApiKey.Equals("$(AzureOpenAiApiKey)", StringComparison.OrdinalIgnoreCase))
-        {
-            openAiApiKey = "NA";
-            openAiEndpoint = "https://api.openai.com/v2/";
-        }
-        var client = new AzureOpenAIClient(
-            new Uri(openAiEndpoint),
-            new ApiKeyCredential(openAiApiKey)
+        builder.Services.AddSingleton(_ =>
+            new AzureOpenAIClient(
+                    new Uri(builder.Configuration["AzureOpenAiEndpoint"]!),
+                    new AzureKeyCredential(builder.Configuration["AzureOpenAiApiKey"]!))
+                .GetChatClient(builder.Configuration["AzureOpenAiModel"]!)
+                .AsIChatClient()
         );
-        var chatClient = client.GetChatClient(builder.Configuration["AzureOpenAiModel"]).AsIChatClient();
-        builder.Services.AddChatClient(chatClient).UseFunctionInvocation().UseLogging();
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddSingleton(FileSystem.Current);
