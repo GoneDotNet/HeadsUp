@@ -1,5 +1,5 @@
 using System.Text.Json;
-using Shiny.SqliteDocumentDb;
+using Shiny.DocumentDb;
 using Dto = GoneDotNet.HeadsUp.Services.GameCategory;
 using Data = GoneDotNet.HeadsUp.Services.Impl.GameCategory;
 

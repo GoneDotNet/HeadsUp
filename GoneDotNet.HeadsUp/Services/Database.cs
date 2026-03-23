@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
-using Shiny.SqliteDocumentDb;
+using Shiny.DocumentDb;
+using Shiny.DocumentDb.Sqlite;
 
 namespace GoneDotNet.HeadsUp.Services.Impl;
 
@@ -8,9 +9,10 @@ public static class Database
 {
     public static IServiceCollection AddDatabase(this IServiceCollection services)
     {
-        services.AddSqliteDocumentStore(opts =>
+        services.AddDocumentStore(opts =>
         {
-            opts.ConnectionString = $"Data Source={Path.Combine(FileSystem.AppDataDirectory, "app.db3")}";
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "app.db3");
+            opts.DatabaseProvider = new SqliteDatabaseProvider($"Data Source={dbPath}");
             opts.JsonSerializerOptions = AppJsonContext.Default.Options;
             opts.UseReflectionFallback = false;
         });

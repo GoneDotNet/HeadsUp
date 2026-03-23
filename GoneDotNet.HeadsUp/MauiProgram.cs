@@ -1,11 +1,8 @@
-﻿using System.ClientModel;
-using Azure;
+﻿using Azure;
 using Azure.AI.OpenAI;
 using GoneDotNet.HeadsUp.Services.Impl;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
-using Shiny.SqliteDocumentDb;
-using GameCategoryData = GoneDotNet.HeadsUp.Services.Impl.GameCategory;
 
 namespace GoneDotNet.HeadsUp;
 
