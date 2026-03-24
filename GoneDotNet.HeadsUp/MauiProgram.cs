@@ -23,7 +23,11 @@ public static class MauiProgram
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Configuration.AddJsonPlatformBundle();
+        builder.Configuration.AddJsonStream(
+            typeof(MauiProgram)
+                .Assembly
+                .GetManifestResourceStream("GoneDotNet.HeadsUp.appsettings.json")!
+        );
         
 #if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Trace);
