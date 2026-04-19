@@ -11,23 +11,28 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        var builder = MauiApp
-            .CreateBuilder()
+        var builder = MauiApp.CreateBuilder();
+        builder.Configuration.AddJsonStream(
+            typeof(MauiProgram)
+                .Assembly
+                .GetManifestResourceStream("GoneDotNet.HeadsUp.appsettings.json")!
+        );
+        
+        builder
             .UseMauiApp<App>()
             .UseMauiCommunityToolkit()
             .UseMauiCommunityToolkitMediaElement(false)
-            .UseShinyShell(x => x.AddGeneratedMaps())
+            .UseShinyShell(x => x
+                .AddGeneratedMaps()
+                .UseUxDiversDialogs()
+            )
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
             });
 
-        builder.Configuration.AddJsonStream(
-            typeof(MauiProgram)
-                .Assembly
-                .GetManifestResourceStream("GoneDotNet.HeadsUp.appsettings.json")!
-        );
+
         
 #if DEBUG
         builder.Logging.SetMinimumLevel(LogLevel.Trace);

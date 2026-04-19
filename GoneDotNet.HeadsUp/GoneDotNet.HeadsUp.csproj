@@ -10,7 +10,7 @@
         <UseMaui>true</UseMaui>
         <LangVersion>preview</LangVersion>
         <EnableConfigurationBindingGenerator>true</EnableConfigurationBindingGenerator>
-        
+
         <ApplicationTitle>GDN Heads Up</ApplicationTitle>
         <ApplicationId>org.gonedotnet.headsup</ApplicationId>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -44,28 +44,29 @@
         <MauiFont Include="Resources\Fonts\*"/>
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)"/>
         <EmbeddedResource Include="Assets\*.mp3"/>
-        
+
         <CustomEntitlements Include="com.apple.developer.carplay-driving-task"
                             Type="Boolean"
                             Value="true"
                             Visible="false"/>
-        
-        <None Remove="appsettings.json" />
-        <EmbeddedResource Include="appsettings.json" />
+
+        <None Remove="appsettings.json"/>
+        <EmbeddedResource Include="appsettings.json"/>
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.AI" Version="10.4.1"/>
-        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.4.1"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.5" />
+        <PackageReference Include="Microsoft.Extensions.AI" Version="10.5.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.0"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.6"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.5" Condition="'$(Configuration)' == 'Debug'"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.6" Condition="'$(Configuration)' == 'Debug'"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="CommunityToolkit.Maui" Version="14.0.1"/>
-        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="8.0.1"/>
+        <PackageReference Include="CommunityToolkit.Maui" Version="14.1.0"/>
+        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="9.0.0"/>
         <PackageReference Include="Plugin.Maui.Audio" Version="4.0.0"/>
-        <PackageReference Include="Shiny.Maui.Shell" Version="3.2.0"/>
+        <PackageReference Include="Shiny.Maui.Shell" Version="4.2.1"/>
+        <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="4.2.1"/>
         <PackageReference Include="Shiny.Extensions.MauiHosting" Version="2.0.4"/>
         <PackageReference Include="Shiny.DocumentDb.Sqlite" Version="3.2.0"/>
         <PackageReference Include="Shiny.DocumentDb.Extensions.DependencyInjection" Version="3.2.0"/>

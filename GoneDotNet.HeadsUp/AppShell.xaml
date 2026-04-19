@@ -6,8 +6,6 @@
                   Shell.FlyoutBehavior="Disabled"
                   x:Class="GoneDotNet.HeadsUp.AppShell"
                   x:DataType="local:AppShell">
-    <ShellContent
-        Title="Main Page"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+    <ShellContent ContentTemplate="{DataTemplate local:MainPage}"
+                  Route="MainPage" />
 </shiny:ShinyShell>
