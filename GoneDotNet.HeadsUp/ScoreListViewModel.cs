@@ -43,5 +43,5 @@ public partial class GameResultViewModel(
     public int CorrectAnswers => correctAnswers;
     
     [RelayCommand]
-    Task NavToScore() => navigator.NavigateToScore(gameId);
+    Task NavToScore() => navigator.NavigateToScore(gameId, false);
 }

@@ -1,37 +1,33 @@
-using System.Globalization;
-using CommunityToolkit.Maui.Media;
+using Shiny.Speech;
 
 namespace GoneDotNet.HeadsUp.Services.Impl;
 
 
 [Singleton]
 public class SpeechToTextAnswerDetector(
+    ISpeechToTextService stt,
     IGameService gameService,
     ILogger<SpeechToTextAnswerDetector> logger
 ) : IAnswerDetector
 {
-    ISpeechToText Stt => SpeechToText.Default;
     public event EventHandler<AnswerType>? AnswerDetected;
-    
-    Timer? bufferTimer;
-    readonly List<string> wordBuffer = new();
-    readonly object syncLock = new object();
 
-    
+    CancellationTokenSource? cts;
+
+
     public async Task Start()
     {
-        var result = await Stt.RequestPermissions();
-        if (!result || Stt.CurrentState != SpeechToTextState.Stopped)
+        var access = await stt.RequestAccess();
+        if (access != AccessState.Available)
+        {
+            logger.LogWarning("Speech-to-text access denied: {State}", access);
             return;
+        }
 
         try
         {
-            Stt.RecognitionResultUpdated += SttOnRecognitionResultUpdated;
-            await MainThread.InvokeOnMainThreadAsync(() => Stt.StartListenAsync(new SpeechToTextOptions
-            {
-                Culture = new CultureInfo("en-US"),
-                ShouldReportPartialResults = true
-            }));
+            cts = new CancellationTokenSource();
+            _ = ListenLoop(cts.Token);
         }
         catch (Exception ex)
         {
@@ -39,94 +35,55 @@ public class SpeechToTextAnswerDetector(
         }
     }
 
+    async Task ListenLoop(CancellationToken ct)
+    {
+        try
+        {
+            while (!ct.IsCancellationRequested)
+            {
+                var keywords = BuildKeywords();
+                var matched = await stt.ListenForKeyword(keywords, cancellationToken: ct);
+
+                if (matched == null)
+                    continue;
+
+                logger.LogDebug("Matched keyword: {Keyword}", matched);
+                var answer = matched is "next question" or "pass"
+                    ? AnswerType.Pass
+                    : AnswerType.Success;
+
+                this.AnswerDetected?.Invoke(this, answer);
+            }
+        }
+        catch (OperationCanceledException) { }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Speech-to-text listen loop error");
+        }
+    }
+
+    string[] BuildKeywords()
+    {
+        var keywords = new List<string> { "next question", "pass", "close enough", "correct" };
+
+        var currentAnswer = gameService.CurrentAnswer;
+        if (currentAnswer != null)
+        {
+            keywords.Add(currentAnswer.DisplayValue);
+
+            if (currentAnswer.AlternateVersions != null)
+                keywords.AddRange(currentAnswer.AlternateVersions);
+        }
+
+        return keywords.ToArray();
+    }
+
 
     public Task Stop()
     {
-        Stt.RecognitionResultUpdated -= SttOnRecognitionResultUpdated;
-        
-        // Clean up the buffer timer
-        lock (syncLock)
-        {
-            bufferTimer?.Dispose();
-            bufferTimer = null;
-            wordBuffer.Clear();
-        } 
-        return MainThread.InvokeOnMainThreadAsync(() => Stt.StopListenAsync());
-    }
-
-
-    void SttOnRecognitionResultUpdated(object? sender, SpeechToTextRecognitionResultUpdatedEventArgs args)
-    {
-        var text = args.RecognitionResult?.Trim();
-        if (String.IsNullOrWhiteSpace(text))
-            return;
-        
-        logger.LogDebug("Incoming Text: " + text);
-        lock (syncLock)
-        {
-            // Add the word/phrase to our buffer
-            wordBuffer.Add(text);
-            
-            // Reset the buffer timer - we'll process after 800ms of no new words
-            bufferTimer?.Dispose();
-            bufferTimer = new Timer(ProcessBufferedUtterance, null, 800, Timeout.Infinite);
-        }
-    }
-
-    void ProcessBufferedUtterance(object? state)
-    {
-        string utterance;
-        
-        lock (syncLock)
-        {
-            // Combine all buffered words into a single utterance
-            utterance = string.Join(" ", wordBuffer);
-            
-            // Clear the buffer and dispose timer
-            wordBuffer.Clear();
-            bufferTimer?.Dispose();
-            bufferTimer = null;
-        }
-        
-        if (!String.IsNullOrWhiteSpace(utterance))
-        {
-            logger.LogDebug("Processing buffered utterance: " + utterance);
-            var answer = DetectAnswer(utterance);
-            
-            if (answer != null)
-                this.AnswerDetected?.Invoke(this, answer.Value);
-        }
-    }
-
-
-    AnswerType? DetectAnswer(string text)
-    {
-        logger.LogDebug("Detect Answer: " + text);
-        switch (text)
-        {
-            case "next question":
-            case "pass":
-                return AnswerType.Pass;
-            
-            case "close enough":
-            case "correct":
-                return AnswerType.Success;
-            
-            default:
-                
-                var result = gameService.CurrentAnswer?.DisplayValue.Contains(text, StringComparison.InvariantCultureIgnoreCase) ?? false;
-                if (result)
-                    return AnswerType.Success;
-
-                result = gameService
-                    .CurrentAnswer?
-                    .AlternateVersions?
-                    .Any(x => x.Contains(text, StringComparison.InvariantCultureIgnoreCase)) ?? false;
-                
-                if (result)
-                    return AnswerType.Success;
-                
-                return null;
-        }
+        cts?.Cancel();
+        cts?.Dispose();
+        cts = null;
+        return Task.CompletedTask;
     }
 }

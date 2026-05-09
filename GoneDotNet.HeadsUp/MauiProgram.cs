@@ -3,6 +3,8 @@ using Azure.AI.OpenAI;
 using GoneDotNet.HeadsUp.Services.Impl;
 using Microsoft.Extensions.AI;
 using Microsoft.Extensions.Configuration;
+using CommunityToolkit.Maui;
+using Shiny.Speech;
 
 namespace GoneDotNet.HeadsUp;
 
@@ -20,7 +22,6 @@ public static class MauiProgram
         
         builder
             .UseMauiApp<App>()
-            .UseMauiCommunityToolkit()
             .UseMauiCommunityToolkitMediaElement(false)
             .UseShinyShell(x => x
                 .AddGeneratedMaps()
@@ -47,6 +48,7 @@ public static class MauiProgram
                 .AsIChatClient()
         );
 
+        builder.Services.AddSpeechServices();
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddSingleton(FileSystem.Current);
         builder.Services.AddSingleton(Connectivity.Current);
