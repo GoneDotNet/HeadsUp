@@ -42,7 +42,7 @@ public class SpeechToTextAnswerDetector(
             while (!ct.IsCancellationRequested)
             {
                 var keywords = BuildKeywords();
-                var matched = await stt.ListenForKeyword(keywords, cancellationToken: ct);
+                var matched = await stt.WaitListenForKeywords(keywords, cancellationToken: ct);
 
                 if (matched == null)
                     continue;

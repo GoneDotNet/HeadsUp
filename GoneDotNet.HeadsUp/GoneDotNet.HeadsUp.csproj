@@ -55,16 +55,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
-        <PackageReference Include="Microsoft.Extensions.AI" Version="10.5.2"/>
-        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.5.2"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.7"/>
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" Condition="'$(Configuration)' == 'Debug'"/>
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.7" Condition="'$(Configuration)' == 'Debug'"/>
+        <PackageReference Include="Microsoft.Extensions.AI" Version="10.6.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.6.0"/>
+        <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="9.0.0"/>
-        <PackageReference Include="Shiny.Speech" Version="1.2.0"/>
         <PackageReference Include="Plugin.Maui.Audio" Version="4.0.0"/>
+        <PackageReference Include="Shiny.Speech" Version="2.0.0"/>
         <PackageReference Include="Shiny.Maui.Shell" Version="6.0.3"/>
         <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="6.0.3"/>
         <PackageReference Include="Shiny.Extensions.MauiHosting" Version="3.0.0"/>
