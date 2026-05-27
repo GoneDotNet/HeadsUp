@@ -43,7 +43,8 @@ public static class MauiProgram
         builder.Services.AddSingleton(_ =>
             new AzureOpenAIClient(
                     new Uri(builder.Configuration["AzureOpenAiEndpoint"]!),
-                    new AzureKeyCredential(builder.Configuration["AzureOpenAiApiKey"]!))
+                    new AzureKeyCredential(builder.Configuration["AzureOpenAiApiKey"]!)
+                )
                 .GetChatClient(builder.Configuration["AzureOpenAiModel"]!)
                 .AsIChatClient()
         );
