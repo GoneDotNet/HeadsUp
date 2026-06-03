@@ -8,10 +8,12 @@ public interface IGameService
     ProvidedAnswer CurrentAnswer { get; }
     string CurrentCategory { get; }
     int AnswerNumber { get; }
-    
+
+    event EventHandler? CurrentAnswerChanged;
+
     void StartGame(string category, ProvidedAnswer[] answers);
     Task EndGame();
-    
+
     void MarkAnswer(AnswerType answerType);
 
     Task<GameResult> GetGameResult(Guid gameId);

@@ -13,4 +13,5 @@ public static class CarServiceResolver
     public static ICategoryRespository CategoryRepo => Services.GetRequiredService<ICategoryRespository>();
     public static IGameService GameService => Services.GetRequiredService<IGameService>();
     public static IAnswerProvider AnswerProvider => Services.GetRequiredService<IAnswerProvider>();
+    public static IEnumerable<IAnswerDetector> AnswerDetectors => Services.GetServices<IAnswerDetector>();
 }

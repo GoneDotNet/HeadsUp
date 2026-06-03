@@ -16,22 +16,25 @@ public class GameService(
     public string CurrentCategory { get; private set; }
     public int AnswerNumber { get; private set; }
 
+    public event EventHandler? CurrentAnswerChanged;
+
     readonly List<(string Answer, DateTimeOffset Timestamp, AnswerType AnswerType)> history = new();
     ProvidedAnswer[]? answers;
-    
+
     public void StartGame(string category, ProvidedAnswer[] answers)
     {
         if (this.IsGameInProgress)
             return;
-        
+
         this.IsGameInProgress = true;
         this.history.Clear();
-        
+
         this.Id = Guid.NewGuid();
         this.CurrentCategory = category;
         this.answers = answers;
         this.AnswerNumber = 1;
         this.CurrentAnswer = this.answers[0];
+        this.CurrentAnswerChanged?.Invoke(this, EventArgs.Empty);
     }
 
     
@@ -74,9 +77,10 @@ public class GameService(
     public void MarkAnswer(AnswerType answerType)
     {
         this.history.Add((this.CurrentAnswer.DisplayValue, DateTimeOffset.UtcNow, answerType));
-        
+
         this.AnswerNumber++;
         this.CurrentAnswer = this.answers[this.AnswerNumber - 1];
+        this.CurrentAnswerChanged?.Invoke(this, EventArgs.Empty);
     }
     
 

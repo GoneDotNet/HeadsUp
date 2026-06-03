@@ -29,9 +29,11 @@ public class VideoRecorder(ILogger<VideoRecorder> logger) : BaseVideoRecorder(lo
             if (!cameraStatus || !audioStatus)
                 throw new UnauthorizedAccessException("Camera and microphone permissions are required");
 
-            // Setup capture session
+            // Setup capture session — do NOT let it reconfigure our shared AVAudioSession
+            // (would otherwise interrupt SFSpeechRecognizer / Shiny.Speech in the middle of a game)
             this.captureSession = new AVCaptureSession();
             this.captureSession.SessionPreset = AVCaptureSession.Preset1920x1080;
+            this.captureSession.AutomaticallyConfiguresApplicationAudioSession = false;
 
             // Setup video input
             var devicePosition = useFrontCamera ? AVCaptureDevicePosition.Front : AVCaptureDevicePosition.Back;

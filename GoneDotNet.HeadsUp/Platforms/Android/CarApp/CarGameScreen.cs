@@ -8,15 +8,31 @@ namespace GoneDotNet.HeadsUp;
 public class CarGameScreen : Screen
 {
     readonly GameEngine engine;
+    readonly IAnswerDetector[] detectors;
     bool answerBlurred;
 
     public CarGameScreen(CarContext carContext) : base(carContext)
     {
+        detectors = CarServiceResolver.AnswerDetectors.ToArray();
         engine = new GameEngine(CarServiceResolver.Beeper, CarServiceResolver.GameService);
         engine.StateChanged += OnStateChanged;
         engine.GameOver += OnGameOver;
         engine.Start();
+
+        _ = StartDetectorsAsync();
     }
+
+    async Task StartDetectorsAsync()
+    {
+        foreach (var detector in detectors)
+        {
+            detector.AnswerDetected += OnDetectorAnswerDetected;
+            await detector.Start();
+        }
+    }
+
+    void OnDetectorAnswerDetected(object? sender, AnswerType answerType)
+        => engine.SubmitAnswer(answerType);
 
     public override ITemplate OnGetTemplate()
     {
@@ -95,6 +111,12 @@ public class CarGameScreen : Screen
     {
         engine.StateChanged -= OnStateChanged;
         engine.GameOver -= OnGameOver;
+
+        foreach (var detector in detectors)
+        {
+            detector.AnswerDetected -= OnDetectorAnswerDetected;
+            await detector.Stop();
+        }
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {

@@ -13,6 +13,7 @@ public class CarPlaySceneDelegate : CPTemplateApplicationSceneDelegate
     ICategoryRespository CategoryRepo => Services.GetRequiredService<ICategoryRespository>();
     IGameService GameService => Services.GetRequiredService<IGameService>();
     IAnswerProvider AnswerProvider => Services.GetRequiredService<IAnswerProvider>();
+    IEnumerable<IAnswerDetector> AnswerDetectors => Services.GetServices<IAnswerDetector>();
 
     public override void DidConnect(CPTemplateApplicationScene templateApplicationScene, CPInterfaceController interfaceController)
     {
@@ -42,7 +43,7 @@ public class CarPlaySceneDelegate : CPTemplateApplicationSceneDelegate
     public void NavigateToGamePlay()
     {
         if (interfaceController == null) return;
-        var screen = new CarPlayGameScreen(interfaceController, Beeper, GameService, this);
+        var screen = new CarPlayGameScreen(interfaceController, Beeper, GameService, this, AnswerDetectors);
         interfaceController.PushTemplate(screen.Template, true, null);
     }
 

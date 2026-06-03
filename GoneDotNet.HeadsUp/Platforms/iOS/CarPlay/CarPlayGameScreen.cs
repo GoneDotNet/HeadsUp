@@ -10,6 +10,7 @@ public class CarPlayGameScreen
     readonly IBeepService beeper;
     readonly IGameService gameService;
     readonly CarPlaySceneDelegate navigator;
+    readonly IAnswerDetector[] detectors;
     readonly GameEngine engine;
     bool answerBlurred;
 
@@ -19,12 +20,14 @@ public class CarPlayGameScreen
         CPInterfaceController controller,
         IBeepService beeper,
         IGameService gameService,
-        CarPlaySceneDelegate navigator)
+        CarPlaySceneDelegate navigator,
+        IEnumerable<IAnswerDetector> detectors)
     {
         this.controller = controller;
         this.beeper = beeper;
         this.gameService = gameService;
         this.navigator = navigator;
+        this.detectors = detectors.ToArray();
 
         engine = new GameEngine(beeper, gameService);
         engine.StateChanged += OnStateChanged;
@@ -32,7 +35,21 @@ public class CarPlayGameScreen
 
         Template = BuildTemplate();
         engine.Start();
+
+        _ = StartDetectorsAsync();
     }
+
+    async Task StartDetectorsAsync()
+    {
+        foreach (var detector in detectors)
+        {
+            detector.AnswerDetected += OnDetectorAnswerDetected;
+            await detector.Start();
+        }
+    }
+
+    void OnDetectorAnswerDetected(object? sender, AnswerType answerType)
+        => engine.SubmitAnswer(answerType);
 
     CPInformationTemplate BuildTemplate()
     {
@@ -109,6 +126,12 @@ public class CarPlayGameScreen
     {
         engine.StateChanged -= OnStateChanged;
         engine.GameOver -= OnGameOver;
+
+        foreach (var detector in detectors)
+        {
+            detector.AnswerDetected -= OnDetectorAnswerDetected;
+            await detector.Stop();
+        }
 
         await MainThread.InvokeOnMainThreadAsync(() =>
         {

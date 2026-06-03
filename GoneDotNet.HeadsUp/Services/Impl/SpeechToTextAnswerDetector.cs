@@ -12,7 +12,8 @@ public class SpeechToTextAnswerDetector(
 {
     public event EventHandler<AnswerType>? AnswerDetected;
 
-    CancellationTokenSource? cts;
+    CancellationTokenSource? loopCts;
+    CancellationTokenSource? listenCts;
 
 
     public async Task Start()
@@ -26,8 +27,9 @@ public class SpeechToTextAnswerDetector(
 
         try
         {
-            cts = new CancellationTokenSource();
-            _ = ListenLoop(cts.Token);
+            loopCts = new CancellationTokenSource();
+            gameService.CurrentAnswerChanged += OnCurrentAnswerChanged;
+            _ = ListenLoop(loopCts.Token);
         }
         catch (Exception ex)
         {
@@ -41,8 +43,20 @@ public class SpeechToTextAnswerDetector(
         {
             while (!ct.IsCancellationRequested)
             {
+                listenCts?.Dispose();
+                listenCts = CancellationTokenSource.CreateLinkedTokenSource(ct);
+
                 var keywords = BuildKeywords();
-                var matched = await stt.WaitListenForKeywords(keywords, cancellationToken: ct);
+                string? matched;
+                try
+                {
+                    matched = await stt.WaitListenForKeywords(keywords, cancellationToken: listenCts.Token);
+                }
+                catch (OperationCanceledException)
+                {
+                    // either the loop was cancelled or the current answer changed — re-loop
+                    continue;
+                }
 
                 if (matched == null)
                     continue;
@@ -60,6 +74,13 @@ public class SpeechToTextAnswerDetector(
         {
             logger.LogWarning(ex, "Speech-to-text listen loop error");
         }
+    }
+
+    void OnCurrentAnswerChanged(object? sender, EventArgs e)
+    {
+        // cancel just the current listen call so the loop reiterates with the new keyword set
+        try { listenCts?.Cancel(); }
+        catch (ObjectDisposedException) { }
     }
 
     string[] BuildKeywords()
@@ -81,9 +102,15 @@ public class SpeechToTextAnswerDetector(
 
     public Task Stop()
     {
-        cts?.Cancel();
-        cts?.Dispose();
-        cts = null;
+        gameService.CurrentAnswerChanged -= OnCurrentAnswerChanged;
+        try { listenCts?.Cancel(); }
+        catch (ObjectDisposedException) { }
+        listenCts?.Dispose();
+        listenCts = null;
+
+        loopCts?.Cancel();
+        loopCts?.Dispose();
+        loopCts = null;
         return Task.CompletedTask;
     }
 }
