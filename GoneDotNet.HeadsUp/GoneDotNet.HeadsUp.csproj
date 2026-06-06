@@ -16,16 +16,19 @@
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
 
-        <MauiVersion>10.0.60</MauiVersion>
+        <MauiVersion>10.0.70</MauiVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
-        <DefineConstants>$(DefineConstants);PLATFORM</DefineConstants>
+        <DefineConstants>$(DefineConstants);PLATFORM;ANDROID</DefineConstants>
         <SupportedOSPlatformVersion>26.0</SupportedOSPlatformVersion>
         <TargetPlatformVersion>36</TargetPlatformVersion>
+        <AndroidEnableMarshalMethods>false</AndroidEnableMarshalMethods>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios' OR $([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">
+        <IsAotCompatible>true</IsAotCompatible>
+        <PublishAot>true</PublishAot>
         <SupportedOSPlatformVersion>15.0</SupportedOSPlatformVersion>
         <DefineConstants>$(DefineConstants);APPLE;PLATFORM</DefineConstants>
     </PropertyGroup>
@@ -62,14 +65,14 @@
         <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.6.0"/>
         <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
-        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="9.0.0"/>
+        <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="10.0.0" />
         <PackageReference Include="Plugin.Maui.Audio" Version="4.0.0"/>
         <PackageReference Include="Shiny.Speech" Version="2.1.0"/>
-        <PackageReference Include="Shiny.Maui.Shell" Version="6.1.0"/>
-        <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="6.1.0"/>
-        <PackageReference Include="Shiny.Extensions.MauiHosting" Version="3.0.0"/>
-        <PackageReference Include="Shiny.DocumentDb.Sqlite" Version="5.1.0"/>
-        <PackageReference Include="Shiny.DocumentDb.Extensions.DependencyInjection" Version="5.1.0"/>
+        <PackageReference Include="Shiny.Maui.Shell" Version="6.2.0"/>
+        <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="6.2.0"/>
+        <PackageReference Include="Shiny.Extensions.MauiHosting" Version="4.1.1"/>
+        <PackageReference Include="Shiny.DocumentDb.Sqlite" Version="6.1.0"/>
+        <PackageReference Include="Shiny.DocumentDb.Extensions.DependencyInjection" Version="6.1.0"/>
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
