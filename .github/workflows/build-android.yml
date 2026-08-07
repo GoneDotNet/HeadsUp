@@ -39,9 +39,6 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_VERSION }}
         workloads: maui-ios, maui-android
-        
-    - name: Add .NET Workloads
-      run: dotnet workload install maui-ios maui-android
       
       # https://github.com/marketplace/actions/substitute-secrets-into-tokenised-file
     - name: Configure From Secrets

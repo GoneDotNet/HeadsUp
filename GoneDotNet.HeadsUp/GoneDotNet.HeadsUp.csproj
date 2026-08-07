@@ -61,18 +61,16 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.8" Condition="'$(Configuration)' == 'Debug'"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="10.0.8"/>
         <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)"/>
-        <PackageReference Include="Microsoft.Extensions.AI" Version="10.6.0"/>
-        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.6.0"/>
+        <PackageReference Include="Microsoft.Extensions.AI" Version="10.8.3" />
+        <PackageReference Include="Microsoft.Extensions.AI.OpenAI" Version="10.8.3" />
         <PackageReference Include="Azure.AI.OpenAI" Version="2.1.0"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2"/>
         <PackageReference Include="CommunityToolkit.Maui.MediaElement" Version="10.0.0" />
-        <PackageReference Include="Plugin.Maui.Audio" Version="4.0.0"/>
-        <PackageReference Include="Shiny.Speech" Version="2.1.0"/>
-        <PackageReference Include="Shiny.Maui.Shell" Version="6.2.0"/>
-        <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="6.2.0"/>
-        <PackageReference Include="Shiny.Extensions.MauiHosting" Version="4.1.1"/>
-        <PackageReference Include="Shiny.DocumentDb.Sqlite" Version="6.1.0"/>
-        <PackageReference Include="Shiny.DocumentDb.Extensions.DependencyInjection" Version="6.1.0"/>
+        <PackageReference Include="Shiny.Speech" Version="3.0.0-beta-0027" />
+        <PackageReference Include="Shiny.Maui.Shell" Version="6.3.2" />
+        <PackageReference Include="Shiny.Maui.Shell.UxDiversDialogs" Version="6.3.2" />
+        <PackageReference Include="Shiny.Extensions.MauiHosting" Version="5.1.5" />
+        <PackageReference Include="Shiny.DocumentDb.Sqlite" Version="13.1.2" />
     </ItemGroup>
 
     <ItemGroup Condition="$(TargetFramework.Contains('android'))">
