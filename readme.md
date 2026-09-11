@@ -35,57 +35,70 @@ _Microsoft Application User Interface Library_
 * [Documentation](https://learn.microsoft.com/en-us/dotnet/maui/)
 * [GitHub](https://github.com/dotnet/maui)
 
+### Microsoft.Extensions.AI + Azure OpenAI
+_Unified `IChatClient` abstraction for AI services. Backed by Azure OpenAI to generate category answers (with phonetic variants)._
 
-### Shiny Extensions
-
-_A collection of extensions to the Shiny framework that provide additional functionality and services. These extensions are designed to enhance the capabilities of dependency injection, reflection, and application state._
-
-* [Dependency Injection](https://shinylib.net/extensions/di/)
-* [App Stores](https://shinylib.net/extensions/stores/)
-* [Reflector](https://shinylib.net/extensions/reflector/) - Reflection Source Generator - NOT installed by default
-
-### Shiny MAUI Shell
-_Make .NET MAUI Shell shinier with viewmodel lifecycle management, navigation, and more! - Written by Allan Ritchie_
-
-* [Documentation](https://shinylib.net/)
-* [GitHub](https://github.com/shinyorg/shiny)
+* [Microsoft.Extensions.AI Documentation](https://learn.microsoft.com/en-us/dotnet/ai/microsoft-extensions-ai)
+* [Azure OpenAI SDK Documentation](https://learn.microsoft.com/en-us/dotnet/api/overview/azure/ai.openai-readme)
+* [GitHub - Microsoft.Extensions.AI](https://github.com/dotnet/extensions)
+* [GitHub - Azure SDK](https://github.com/Azure/azure-sdk-for-net)
 
 ### Community Toolkit MVVM
-
-The CommunityToolkit.Mvvm package (aka MVVM Toolkit, formerly named Microsoft.Toolkit.Mvvm) is a modern, fast, and modular MVVM library. It is part of the .NET Community Toolkit and is built around the following principles:
-
-Platform and Runtime Independent - .NET Standard 2.0, .NET Standard 2.1 and .NET 6 🚀 (UI Framework Agnostic)
-Simple to pick-up and use - No strict requirements on Application structure or coding-paradigms (outside of 'MVVM'ness), i.e., flexible usage.
-À la carte - Freedom to choose which components to use.
-Reference Implementation - Lean and performant, providing implementations for interfaces that are included in the Base Class Library, but lack concrete types to use them directly.
+_A modern, fast, and modular MVVM library with source generators for observable properties and commands._
 
 * [Documentation](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)
 * [GitHub](https://github.com/CommunityToolkit/dotnet)
 
+### Shiny MAUI Shell
+_Make .NET MAUI Shell shinier with viewmodel lifecycle management, source-generated routes, navigation, and more! - Written by Allan Ritchie_
 
-### MAUI Community Toolkit
+* [Documentation](https://shinylib.net/mauishell/)
+* [Dialogs (UXDivers integration)](https://shinylib.net/mauishell/dialogs/)
+* [GitHub](https://github.com/shinyorg/mauishell)
 
-_A collection of reusable elements for application development with .NET MAUI, including animations, behaviors, converters, effects, and helpers. It simplifies and demonstrates common developer tasks when building iOS, Android, macOS and WinUI applications._
+### UXDivers Popups
+_Popup controls library for .NET MAUI - used for dialogs via Shiny.Maui.Shell.UxDiversDialogs_
 
-* [Documentation](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/maui/)
-* [GitHub](https://github.com/CommunityToolkit/Maui)
+* [Documentation](https://uxdivers.com/popups)
+* [GitHub](https://github.com/UXDivers/uxd-popups)
 
-### MAUI Community Toolkit - Media Element
+### Shiny Controls - MediaElement
+_Cross-platform audio/video playback (AVPlayer, Media3/ExoPlayer) with a Shiny-drawn transport bar. Plays the recorded game video on the score screen._
 
-MediaElement is a view for playing video and audio in your .NET MAUI app.
+* [Documentation](https://shinylib.net/controls/mediaelement/)
+* [All Shiny Controls](https://shinylib.net/controls/)
+* [GitHub](https://github.com/shinyorg/controls)
 
-* [Documentation](https://learn.microsoft.com/en-ca/dotnet/communitytoolkit/maui/views/mediaelement)
-* [GitHub](https://github.com/CommunityToolkit/Maui)
+### Shiny Speech & Shiny Audio
+_Cross-platform speech-to-text and text-to-speech (reads answers aloud, listens for spoken answers), plus audio playback for game sound effects_
 
-## MAUI Audio Plugin
+* [Speech Documentation](https://shinylib.net/speech/)
+* [Audio Documentation](https://shinylib.net/speech/audio/)
+* [GitHub](https://github.com/shinyorg/speech)
 
-_Provides the ability to play audio inside a .NET MAUI application. - Written by Gerald Versluis_
+### Shiny DocumentDb (SQLite)
+_Document database for .NET with a SQLite provider - stores game history, scores, and categories. 100% AOT._
 
-* [GitHub](https://github.com/jfversluis/Plugin.Maui.Audio)
+* [Documentation](https://shinylib.net/documentdb/)
+* [GitHub](https://github.com/shinyorg/DocumentDb)
 
-### SQLite .NET PCL
+### Shiny Extensions
+_Make .NET dependency injection less boilerplatey and add persistent service magic_
 
-_SQLite-net is an open source, minimal library to allow .NET, .NET Core, and Mono applications to store data in SQLite 3 databases - Written by Frank Krueger_
+* [Dependency Injection](https://shinylib.net/di/) - `[Singleton]`/`[Transient]` source-generated registration
+* [Stores](https://shinylib.net/stores/) - key/value stores & persistent services
+* [MAUI Hosting](https://shinylib.net/foundation/hosting/maui/)
+* [GitHub](https://github.com/shinyorg/extensions)
 
-[GitHub](https://github.com/praeclarum/sqlite-net)
+### Android Auto (AndroidX Car App)
+_Car App Library bindings powering the Android Auto version of the game (`Platforms/Android/CarApp`)_
+
+* [Documentation](https://developer.android.com/training/cars/apps)
+* [GitHub - .NET Android bindings](https://github.com/dotnet/android-libraries)
+
+### xUnit
+_Unit testing framework used by GoneDotNet.HeadsUp.Tests_
+
+* [Documentation](https://xunit.net/)
+* [GitHub](https://github.com/xunit/xunit)
 
