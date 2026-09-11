@@ -15,8 +15,6 @@
         <ApplicationId>org.gonedotnet.headsup</ApplicationId>
         <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
         <ApplicationVersion>1</ApplicationVersion>
-
-        <MauiVersion>10.0.70</MauiVersion>
     </PropertyGroup>
 
     <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">
