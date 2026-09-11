@@ -2,20 +2,20 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:headsUp="clr-namespace:GoneDotNet.HeadsUp"
-             xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+             xmlns:media="http://shiny.net/maui/media"
              x:DataType="headsUp:ScoreViewModel"
              x:Class="GoneDotNet.HeadsUp.ScorePage"
              Shell.NavBarIsVisible="False">
     
     <Grid>
         <!-- Background Video -->
-        <toolkit:MediaElement Source="{Binding VideoUrl}"
-                              ShouldAutoPlay="True"
-                              ShouldShowPlaybackControls="False"
-                              Volume="1.0" 
-                              ShouldLoopPlayback="True" 
-                              HorizontalOptions="Fill"
-                              VerticalOptions="Fill" />
+        <media:MediaElement Source="{Binding VideoUrl}"
+                            AutoPlay="True"
+                            ShowTransportBar="False"
+                            Volume="1.0"
+                            IsLooping="True"
+                            HorizontalOptions="Fill"
+                            VerticalOptions="Fill" />
         
         <!-- Semi-transparent overlay for better readability -->
         <BoxView BackgroundColor="Black"
